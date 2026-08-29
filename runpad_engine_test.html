@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runpad Engine Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #172033;
+      color: #eef3ff;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 20% 10%, rgba(70, 110, 180, 0.28), transparent 36%),
+        linear-gradient(135deg, #172033, #202d48);
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      padding: 11px 22px;
+      background: rgba(13, 20, 34, 0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      z-index: 20;
+    }
+
+    #brand {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #brand-title {
+      display: block;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    #brand-subtitle {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: #93a7c9;
+    }
+
+    #progress-text {
+      position: absolute;
+      right: 22px;
+      top: 16px;
+      font-size: 12px;
+      color: #b8c8e4;
+    }
+
+    #progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    #progress-fill {
+      width: 0;
+      height: 3px;
+      background: #64d3a6;
+    }
+
+    #slides {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      bottom: 66px;
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 20px 24px 24px;
+      overflow-y: auto;
+    }
+
+    .slide.active { display: block; }
+
+    .slide-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .slide h1 {
+      margin: 0 0 5px;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .slide-intro {
+      margin: 0 0 16px;
+      color: #aebddb;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .test-card {
+      display: inline-block;
+      vertical-align: top;
+      width: 48.2%;
+      min-height: 150px;
+      margin: 0 1.2% 14px 0;
+      padding: 14px;
+      background: rgba(31, 43, 67, 0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .test-number {
+      display: inline-block;
+      min-width: 26px;
+      padding: 3px 6px;
+      margin-right: 7px;
+      border-radius: 12px;
+      background: #314364;
+      color: #cfe0ff;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .test-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .test-description {
+      min-height: 33px;
+      margin: 8px 0;
+      color: #aebddb;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .auto-result {
+      display: inline-block;
+      padding: 4px 8px;
+      margin-bottom: 9px;
+      border-radius: 10px;
+      background: #35415a;
+      color: #dfe9ff;
+      font-size: 10px;
+    }
+
+    .auto-yes { background: #1f684f; color: #d7fff0; }
+    .auto-no { background: #743840; color: #ffe1e4; }
+    .auto-partial { background: #785e25; color: #fff1c4; }
+    .auto-info { background: #315a83; color: #e0f1ff; }
+
+    .answer-row {
+      margin-top: 5px;
+      white-space: normal;
+    }
+
+    .answer-option {
+      display: inline-block;
+      margin: 0 7px 5px 0;
+      padding: 4px 7px;
+      border-radius: 9px;
+      background: rgba(255,255,255,0.06);
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .answer-option input {
+      vertical-align: middle;
+      margin: 0 4px 0 0;
+    }
+
+    .test-note {
+      width: 100%;
+      height: 27px;
+      margin-top: 5px;
+      padding: 4px 7px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 7px;
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      font-family: inherit;
+      font-size: 10px;
+    }
+
+    .demo {
+      margin: 7px 0;
+      padding: 8px;
+      min-height: 40px;
+      border: 1px dashed rgba(255,255,255,0.18);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.16);
+      overflow: hidden;
+    }
+
+    .demo-box {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      margin: 2px;
+      border-radius: 6px;
+      background: #65cda4;
+      color: #10251e;
+      font-size: 10px;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .flex-demo {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+
+    .grid-demo {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-demo .demo-box:nth-child(1) { -ms-grid-column: 1; }
+    .grid-demo .demo-box:nth-child(2) { -ms-grid-column: 2; }
+    .grid-demo .demo-box:nth-child(3) { -ms-grid-column: 3; }
+
+    .backdrop-demo {
+      position: relative;
+      height: 54px;
+      background: linear-gradient(90deg, #e85c62, #ffd36a, #55b7e9);
+    }
+
+    .backdrop-demo span {
+      position: absolute;
+      left: 25%;
+      top: 7px;
+      width: 50%;
+      padding: 9px;
+      background: rgba(25,32,48,0.44);
+      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(7px);
+      text-align: center;
+    }
+
+    .filter-demo {
+      width: 50px;
+      height: 38px;
+      background: #ff9b45;
+      -webkit-filter: blur(2px) saturate(1.8);
+      filter: blur(2px) saturate(1.8);
+    }
+
+    .transition-demo {
+      width: 44px;
+      height: 34px;
+      background: #5fb9ff;
+      -webkit-transition: width 0.4s, background 0.4s;
+      transition: width 0.4s, background 0.4s;
+    }
+
+    .transition-demo:hover {
+      width: 150px;
+      background: #ec7f68;
+    }
+
+    .animation-demo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f7c85c;
+      -webkit-animation: engine-pulse 1.2s infinite alternate;
+      animation: engine-pulse 1.2s infinite alternate;
+    }
+
+    @-webkit-keyframes engine-pulse {
+      from { margin-left: 0; -webkit-transform: rotate(0deg); }
+      to { margin-left: 120px; -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes engine-pulse {
+      from { margin-left: 0; transform: rotate(0deg); }
+      to { margin-left: 120px; transform: rotate(360deg); }
+    }
+
+    .manual-panel {
+      margin: 10px 0 16px;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(29, 42, 66, 0.92);
+      border: 1px solid rgba(255,255,255,0.13);
+    }
+
+    .action-button, .nav-button {
+      border: 0;
+      border-radius: 9px;
+      background: #3d70b2;
+      color: #fff;
+      padding: 9px 14px;
+      margin: 3px 6px 3px 0;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .action-button:hover, .nav-button:hover { background: #4d86d1; }
+    .action-button.secondary { background: #45536d; }
+
+    #pointer-pad {
+      height: 70px;
+      margin-top: 8px;
+      border: 1px dashed #6e8dbd;
+      border-radius: 9px;
+      line-height: 70px;
+      text-align: center;
+      color: #9eb5da;
+      -ms-touch-action: none;
+      touch-action: none;
+    }
+
+    #file-output, #action-output {
+      margin-top: 8px;
+      padding: 7px;
+      min-height: 30px;
+      border-radius: 7px;
+      background: rgba(0,0,0,0.22);
+      color: #bcd0f1;
+      font-size: 11px;
+      white-space: pre-wrap;
+    }
+
+    #report {
+      width: 100%;
+      height: 330px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      background: #101827;
+      color: #dce8ff;
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      resize: vertical;
+    }
+
+    #navbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 66px;
+      padding: 12px 22px;
+      background: rgba(13, 20, 34, 0.94);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      z-index: 20;
+    }
+
+    #prev-button { float: left; }
+    #next-button { float: right; }
+    #slide-dots {
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .slide-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 4px;
+      border-radius: 50%;
+      background: #45516a;
+    }
+
+    .slide-dot.active { background: #64d3a6; }
+
+    @media screen and (max-width: 760px) {
+      .test-card { width: 100%; margin-right: 0; }
+      #brand-subtitle { display: none; }
+      .slide { padding-left: 12px; padding-right: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="topbar">
+      <span id="brand">
+        <span id="brand-title">Runpad Engine Lab</span>
+        <span id="brand-subtitle">Пошаговая проверка возможностей встроенного HTML-движка</span>
+      </span>
+      <span id="progress-text"></span>
+      <div id="progress-track"><div id="progress-fill"></div></div>
+    </div>
+
+    <div id="slides"></div>
+
+    <div id="navbar">
+      <button id="prev-button" class="nav-button" type="button" onclick="previousSlide()">Назад</button>
+      <button id="next-button" class="nav-button" type="button" onclick="nextSlide()">Далее</button>
+      <div id="slide-dots"></div>
+    </div>
+  </div>
+
+  <script>
+    var currentSlide = 0;
+    var testCounter = 0;
+    var autoResults = {};
+
+    var slideData = [
+      {
+        title: '1. Паспорт движка',
+        intro: 'Сначала определим браузерный движок, режим документа и наличие моста Runpad. Отметьте вручную, совпадает ли автоматический результат с реальностью.',
+        tests: [
+          ['user_agent', 'User Agent', 'Строка идентификации встроенного браузера.', 'info_user_agent', ''],
+          ['document_mode', 'Режим Internet Explorer', 'Показывает document.documentMode, если страница работает через Trident/IE.', 'info_document_mode', ''],
+          ['viewport', 'Размер рабочей области', 'Фактическая ширина и высота HTML-страницы внутри Runpad.', 'info_viewport', ''],
+          ['protocol', 'Способ открытия файла', 'Проверяет, открыт ли тест как file:, http: или другой протокол.', 'info_protocol', ''],
+          ['external_bridge', 'Runpad external.doShellExec', 'Наличие специального метода запуска программ и ссылок.', 'external_bridge', '']
+        ]
+      },
+      {
+        title: '2. CSS: оформление и эффекты',
+        intro: 'Посмотрите на примеры. Автопроверка показывает наличие свойства, но визуальная галочка важнее: движок может распознавать CSS, но отображать его неправильно.',
+        tests: [
+          ['rgba', 'Полупрозрачность RGBA', 'Фон карточек и панелей должен быть полупрозрачным.', 'css_rgba', '<div style="width:110px;height:34px;background:rgba(255,100,60,0.45);"></div>'],
+          ['radius', 'Скругление border-radius', 'Зелёный элемент должен иметь заметно скруглённые углы.', 'css_radius', '<div style="width:70px;height:36px;border-radius:14px;background:#62c99d;"></div>'],
+          ['shadow', 'Тени box-shadow', 'У оранжевого блока должна быть мягкая тень.', 'css_shadow', '<div style="width:70px;height:36px;background:#e88b4d;box-shadow:8px 8px 14px rgba(0,0,0,.55);"></div>'],
+          ['gradient', 'CSS-градиенты', 'Полоса должна плавно переходить от синего к жёлтому.', 'css_gradient', '<div style="width:170px;height:34px;background:linear-gradient(90deg,#4395e5,#f5d267);"></div>'],
+          ['transform', 'CSS transform', 'Квадрат должен быть повёрнут.', 'css_transform', '<div style="width:34px;height:34px;margin:8px;background:#d56b8b;transform:rotate(25deg);-webkit-transform:rotate(25deg);"></div>'],
+          ['transition', 'CSS transition', 'Наведите мышь: голубая полоска должна плавно расшириться.', 'css_transition', '<div class="transition-demo"></div>'],
+          ['animation', 'CSS animation и keyframes', 'Жёлтый круг должен постоянно двигаться и вращаться.', 'css_animation', '<div class="animation-demo"></div>'],
+          ['filter', 'CSS filter', 'Оранжевый блок должен быть размытым и насыщенным.', 'css_filter', '<div class="filter-demo"></div>'],
+          ['backdrop', 'backdrop-filter', 'Центральная панель должна размывать цветной фон позади себя.', 'css_backdrop', '<div class="backdrop-demo"><span>Размытие фона</span></div>']
+        ]
+      },
+      {
+        title: '3. CSS: компоновка',
+        intro: 'Эти тесты определят, какие способы построения интерфейсов безопасно применять в основном рабочем столе.',
+        tests: [
+          ['flex', 'Современный Flexbox', 'Три блока должны распределиться по всей ширине строки.', 'css_flex', '<div class="flex-demo"><span class="demo-box">1</span><span class="demo-box">2</span><span class="demo-box">3</span></div>'],
+          ['ms_flex', 'Старый -ms-flexbox', 'Проверяется префиксная реализация Flexbox для IE.', 'css_ms_flex', ''],
+          ['grid', 'Современный CSS Grid', 'Три блока должны находиться в трёх одинаковых колонках.', 'css_grid', '<div class="grid-demo"><span class="demo-box">1</span><span class="demo-box">2</span><span class="demo-box">3</span></div>'],
+          ['ms_grid', 'Старый -ms-grid', 'Проверяется Grid-реализация Internet Explorer.', 'css_ms_grid', ''],
+          ['calc', 'CSS calc()', 'Ширина полосы должна быть шириной карточки минус 50 пикселей.', 'css_calc', '<div style="width:calc(100% - 50px);height:18px;background:#6fc9df;"></div>'],
+          ['viewport_units', 'Единицы vw и vh', 'Проверяет поддержку размеров относительно окна.', 'css_viewport', '<div style="width:12vw;max-width:180px;height:3vh;min-height:18px;background:#ba78dd;"></div>'],
+          ['sticky', 'position: sticky', 'Автопроверка свойства; окончательно отмечайте по своему наблюдению.', 'css_sticky', ''],
+          ['css_variables', 'CSS-переменные', 'Блок должен стать зелёным через var(--engine-color).', 'css_variables', '<div style="--engine-color:#5fd09c;width:80px;height:30px;background:var(--engine-color);"></div>']
+        ]
+      },
+      {
+        title: '4. JavaScript и DOM',
+        intro: 'Современный синтаксис проверяется внутри изолированных строк, поэтому неподдерживаемая возможность не должна сломать всю анкету.',
+        tests: [
+          ['query_selector', 'querySelector', 'Поиск элементов современными CSS-селекторами.', 'js_query_selector', ''],
+          ['event_listener', 'addEventListener', 'Современное назначение обработчиков событий.', 'js_event_listener', ''],
+          ['class_list', 'classList', 'Добавление и удаление CSS-классов через DOM API.', 'js_class_list', ''],
+          ['dataset', 'dataset', 'Работа с атрибутами data-*.', 'js_dataset', ''],
+          ['json', 'JSON.parse / JSON.stringify', 'Встроенная работа с JSON.', 'js_json', ''],
+          ['let_const', 'let и const', 'Синтаксис ES2015 для переменных.', 'syntax_let_const', ''],
+          ['arrow', 'Стрелочные функции', 'Синтаксис вида (x) => x + 1.', 'syntax_arrow', ''],
+          ['template', 'Шаблонные строки', 'Строки в обратных кавычках и подстановка значений.', 'syntax_template', ''],
+          ['classes', 'JavaScript class', 'Синтаксис классов ES2015.', 'syntax_class', ''],
+          ['promise', 'Promise', 'Асинхронные цепочки Promise.', 'js_promise', ''],
+          ['async', 'async / await', 'Современный асинхронный синтаксис.', 'syntax_async', ''],
+          ['optional', 'Optional chaining', 'Современный синтаксис объекта с оператором ?. ', 'syntax_optional', '']
+        ]
+      },
+      {
+        title: '5. Хранилища, файлы и сеть',
+        intro: 'Сетевые функции могут существовать, но блокироваться политикой Runpad. Поэтому обязательно отмечайте фактическое поведение.',
+        tests: [
+          ['local_storage', 'localStorage', 'Пробная запись, чтение и удаление значения.', 'api_local_storage', ''],
+          ['session_storage', 'sessionStorage', 'Временное хранилище в рамках текущего окна.', 'api_session_storage', ''],
+          ['indexed_db', 'IndexedDB', 'Встроенная браузерная база данных.', 'api_indexed_db', ''],
+          ['file_reader', 'FileReader', 'Чтение локальных файлов, выбранных пользователем.', 'api_file_reader', ''],
+          ['blob', 'Blob', 'Создание файлов в памяти.', 'api_blob', ''],
+          ['download', 'Атрибут download', 'Скачивание созданного отчёта через ссылку.', 'api_download', ''],
+          ['url_api', 'URL.createObjectURL', 'Создание временного адреса для Blob.', 'api_url', ''],
+          ['xhr', 'XMLHttpRequest', 'Классические HTTP-запросы.', 'api_xhr', ''],
+          ['fetch', 'fetch()', 'Современные HTTP-запросы.', 'api_fetch', ''],
+          ['websocket', 'WebSocket', 'Двустороннее сетевое подключение.', 'api_websocket', '']
+        ]
+      },
+      {
+        title: '6. Графика, медиа и ввод',
+        intro: 'Некоторые возможности требуют ручной проверки. Используйте демонстрации и отметьте реальное поведение.',
+        tests: [
+          ['svg', 'Inline SVG', 'Должен отображаться синий круг и зелёный квадрат.', 'api_svg', '<svg width="110" height="44" viewBox="0 0 110 44"><circle cx="24" cy="22" r="16" fill="#5ba7e6"></circle><rect x="60" y="7" width="32" height="30" rx="5" fill="#61c99e"></rect></svg>'],
+          ['canvas', 'Canvas 2D', 'На холсте должен появиться цветной рисунок.', 'api_canvas', '<canvas id="engine-canvas" width="180" height="48" style="background:#fff;border-radius:6px;"></canvas>'],
+          ['webgl', 'WebGL', 'Аппаратная 3D-графика браузера.', 'api_webgl', ''],
+          ['audio', 'HTML5 Audio', 'Наличие встроенного элемента воспроизведения звука.', 'api_audio', '<audio controls style="width:210px;"></audio>'],
+          ['video', 'HTML5 Video', 'Наличие встроенного элемента воспроизведения видео.', 'api_video', '<video controls width="190" height="70" style="background:#0b0f17;"></video>'],
+          ['raf', 'requestAnimationFrame', 'Оптимизированный цикл анимации.', 'api_raf', ''],
+          ['mutation', 'MutationObserver', 'Отслеживание изменений DOM.', 'api_mutation', ''],
+          ['pointer', 'Pointer Events', 'События мыши, касания и стилуса через PointerEvent.', 'api_pointer', ''],
+          ['touch', 'Touch Events', 'Сенсорные события и количество точек касания.', 'api_touch', ''],
+          ['dragdrop', 'Drag and Drop', 'Поддержка перетаскивания HTML-элементов.', 'api_dragdrop', '']
+        ]
+      },
+      {
+        title: '7. Ручные проверки Runpad',
+        intro: 'Кнопки запускайте по одной. Они ничего не меняют в системе: открывают Блокнот, тестовую веб-страницу или системный диалог.',
+        manual: true,
+        tests: [
+          ['shell_notepad', 'Запуск Блокнота', 'Нажмите кнопку. Если открылся notepad.exe — отметьте «работает».', 'external_bridge', '<button class="action-button" type="button" onclick="testShellExec(\'notepad.exe\')">Открыть Блокнот</button>'],
+          ['shell_url', 'Открытие сайта через Runpad', 'Проверяет передачу HTTPS-ссылки в external.doShellExec.', 'external_bridge', '<button class="action-button" type="button" onclick="testShellExec(\'https://example.com\')">Открыть example.com</button>'],
+          ['window_open', 'Обычный window.open', 'Проверяет разрешение всплывающих окон.', 'api_window_open', '<button class="action-button" type="button" onclick="testWindowOpen()">Проверить window.open</button>'],
+          ['fullscreen', 'Fullscreen API', 'Пытается развернуть анкету в полноэкранный режим.', 'api_fullscreen', '<button class="action-button" type="button" onclick="testFullscreen()">Полный экран</button>'],
+          ['clipboard', 'Буфер обмена', 'Проверяет современный Clipboard API и старый execCommand.', 'api_clipboard', '<button class="action-button" type="button" onclick="testClipboard()">Скопировать тестовый текст</button>'],
+          ['file_manual', 'Ручное чтение файла', 'Выберите небольшой TXT или CSV. Ни один файл никуда не отправляется.', 'api_file_reader', '<input type="file" onchange="readSelectedFile(this)" /><div id="file-output">Файл пока не выбран.</div>'],
+          ['pointer_manual', 'Ручной тест указателя', 'Двигайте мышью или стилусом внутри области.', 'api_pointer', '<div id="pointer-pad">Двигайте указателем здесь</div>']
+        ]
+      },
+      {
+        title: '8. Итоговый отчёт',
+        intro: 'Проверьте ответы. Отчёт содержит автоматические результаты, ваши отметки и комментарии. Пришлите его мне — по нему можно определить безопасный набор технологий для Runpad.',
+        results: true,
+        tests: []
+      }
+    ];
+
+    function setText(element, text) {
+      if (!element) { return; }
+      if (typeof element.textContent !== 'undefined') {
+        element.textContent = text;
+      } else {
+        element.innerText = text;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function syntaxSupported(code) {
+      try {
+        new Function(code);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function cssPropertySupported(propertyName) {
+      var style = document.createElement('div').style;
+      return typeof style[propertyName] !== 'undefined';
+    }
+
+    function cssValueSupported(propertyName, value) {
+      try {
+        var style = document.createElement('div').style;
+        style[propertyName] = value;
+        return style[propertyName] === value;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function storageSupported(storageName) {
+      try {
+        var storage = window[storageName];
+        var key = '__runpad_engine_test__';
+        storage.setItem(key, '1');
+        var result = storage.getItem(key) === '1';
+        storage.removeItem(key);
+        return result;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function bridgeSupported() {
+      try {
+        return !!(
+          window.external &&
+          typeof window.external.doShellExec !== 'undefined'
+        );
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function autoResult(status, detail) {
+      return { status: status, detail: detail };
+    }
+
+    function yesNo(value, yesDetail, noDetail) {
+      return value ?
+        autoResult('yes', yesDetail || 'обнаружено') :
+        autoResult('no', noDetail || 'не обнаружено');
+    }
+
+    function runAutoTest(key) {
+      var style;
+      var canvas;
+      var context;
+      var tick;
+
+      try {
+        switch (key) {
+          case 'info_user_agent':
+            return autoResult('info', navigator.userAgent || 'неизвестно');
+          case 'info_document_mode':
+            return autoResult('info', document.documentMode ?
+              ('IE documentMode = ' + document.documentMode) :
+              'documentMode отсутствует');
+          case 'info_viewport':
+            return autoResult('info',
+              (document.documentElement.clientWidth || window.innerWidth) +
+              ' × ' +
+              (document.documentElement.clientHeight || window.innerHeight));
+          case 'info_protocol':
+            return autoResult('info', window.location.protocol || 'неизвестно');
+          case 'external_bridge':
+            return yesNo(bridgeSupported(), 'external.doShellExec найден', 'мост Runpad не найден');
+
+          case 'css_rgba':
+            return yesNo(cssValueSupported('backgroundColor', 'rgba(1, 2, 3, 0.5)'));
+          case 'css_radius':
+            return yesNo(cssPropertySupported('borderRadius'));
+          case 'css_shadow':
+            return yesNo(cssPropertySupported('boxShadow'));
+          case 'css_gradient':
+            style = document.createElement('div').style;
+            style.backgroundImage = 'linear-gradient(90deg, red, blue)';
+            return yesNo(!!style.backgroundImage);
+          case 'css_transform':
+            return yesNo(cssPropertySupported('transform') || cssPropertySupported('WebkitTransform'));
+          case 'css_transition':
+            return yesNo(cssPropertySupported('transition') || cssPropertySupported('WebkitTransition'));
+          case 'css_animation':
+            return yesNo(cssPropertySupported('animationName') || cssPropertySupported('WebkitAnimationName'));
+          case 'css_filter':
+            return yesNo(cssPropertySupported('filter') || cssPropertySupported('WebkitFilter'));
+          case 'css_backdrop':
+            return yesNo(cssPropertySupported('backdropFilter') || cssPropertySupported('WebkitBackdropFilter'));
+          case 'css_flex':
+            return yesNo(cssValueSupported('display', 'flex'));
+          case 'css_ms_flex':
+            return yesNo(cssValueSupported('display', '-ms-flexbox'));
+          case 'css_grid':
+            return yesNo(cssValueSupported('display', 'grid'));
+          case 'css_ms_grid':
+            return yesNo(cssValueSupported('display', '-ms-grid'));
+          case 'css_calc':
+            style = document.createElement('div').style;
+            style.width = 'calc(100% - 10px)';
+            return yesNo(!!style.width);
+          case 'css_viewport':
+            style = document.createElement('div').style;
+            style.width = '10vw';
+            style.height = '10vh';
+            return yesNo(!!style.width && !!style.height);
+          case 'css_sticky':
+            return yesNo(
+              cssValueSupported('position', 'sticky') ||
+              cssValueSupported('position', '-webkit-sticky')
+            );
+          case 'css_variables':
+            return yesNo(!!(window.CSS && CSS.supports && CSS.supports('--engine-test', '1')));
+
+          case 'js_query_selector':
+            return yesNo(typeof document.querySelector === 'function');
+          case 'js_event_listener':
+            return yesNo(typeof window.addEventListener === 'function');
+          case 'js_class_list':
+            return yesNo(!!document.documentElement.classList);
+          case 'js_dataset':
+            return yesNo('dataset' in document.createElement('div'));
+          case 'js_json':
+            return yesNo(!!(window.JSON && JSON.parse && JSON.stringify));
+          case 'syntax_let_const':
+            return yesNo(syntaxSupported('let a = 1; const b = 2; return a + b;'));
+          case 'syntax_arrow':
+            return yesNo(syntaxSupported('var f = (x) => x + 1; return f(1);'));
+          case 'syntax_template':
+            tick = String.fromCharCode(96);
+            return yesNo(syntaxSupported('var x = ' + tick + 'test' + tick + '; return x;'));
+          case 'syntax_class':
+            return yesNo(syntaxSupported('class TestClass { constructor() { this.x = 1; } }'));
+          case 'js_promise':
+            return yesNo(typeof window.Promise === 'function');
+          case 'syntax_async':
+            return yesNo(syntaxSupported('async function f(){ await Promise.resolve(1); }'));
+          case 'syntax_optional':
+            return yesNo(syntaxSupported('var a = {b:1}; return a?.b;'));
+
+          case 'api_local_storage':
+            return yesNo(storageSupported('localStorage'));
+          case 'api_session_storage':
+            return yesNo(storageSupported('sessionStorage'));
+          case 'api_indexed_db':
+            return yesNo(!!window.indexedDB);
+          case 'api_file_reader':
+            return yesNo(typeof window.FileReader === 'function');
+          case 'api_blob':
+            return yesNo(typeof window.Blob === 'function');
+          case 'api_download':
+            return yesNo('download' in document.createElement('a'));
+          case 'api_url':
+            return yesNo(!!(window.URL && window.URL.createObjectURL));
+          case 'api_xhr':
+            return yesNo(typeof window.XMLHttpRequest === 'function');
+          case 'api_fetch':
+            return yesNo(typeof window.fetch === 'function');
+          case 'api_websocket':
+            return yesNo(typeof window.WebSocket === 'function');
+
+          case 'api_svg':
+            return yesNo(!!(
+              document.createElementNS &&
+              document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect
+            ));
+          case 'api_canvas':
+            canvas = document.createElement('canvas');
+            return yesNo(!!(canvas.getContext && canvas.getContext('2d')));
+          case 'api_webgl':
+            canvas = document.createElement('canvas');
+            try {
+              context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            } catch (webglError) {
+              context = null;
+            }
+            return yesNo(!!context);
+          case 'api_audio':
+            return yesNo(!!document.createElement('audio').canPlayType);
+          case 'api_video':
+            return yesNo(!!document.createElement('video').canPlayType);
+          case 'api_raf':
+            return yesNo(!!(
+              window.requestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.msRequestAnimationFrame
+            ));
+          case 'api_mutation':
+            return yesNo(typeof window.MutationObserver === 'function');
+          case 'api_pointer':
+            return yesNo(!!(window.PointerEvent || 'onpointerdown' in window));
+          case 'api_touch':
+            return yesNo(!!(
+              'ontouchstart' in window ||
+              navigator.maxTouchPoints ||
+              navigator.msMaxTouchPoints
+            ));
+          case 'api_dragdrop':
+            return yesNo('draggable' in document.createElement('div'));
+          case 'api_window_open':
+            return yesNo(typeof window.open === 'function');
+          case 'api_fullscreen':
+            return yesNo(!!(
+              document.documentElement.requestFullscreen ||
+              document.documentElement.msRequestFullscreen ||
+              document.documentElement.webkitRequestFullscreen
+            ));
+          case 'api_clipboard':
+            return yesNo(!!(
+              navigator.clipboard ||
+              (document.queryCommandSupported && document.queryCommandSupported('copy'))
+            ));
+        }
+      } catch (error) {
+        return autoResult('partial', 'ошибка проверки: ' + error.message);
+      }
+
+      return autoResult('info', 'только ручная проверка');
+    }
+
+    function answerHtml(testId) {
+      return '' +
+        '<div class="answer-row">' +
+          '<label class="answer-option"><input type="radio" name="answer_' + testId + '" value="yes" onclick="updateAnsweredCount()" /> Работает</label>' +
+          '<label class="answer-option"><input type="radio" name="answer_' + testId + '" value="partial" onclick="updateAnsweredCount()" /> Частично</label>' +
+          '<label class="answer-option"><input type="radio" name="answer_' + testId + '" value="no" onclick="updateAnsweredCount()" /> Не работает</label>' +
+          '<label class="answer-option"><input type="radio" name="answer_' + testId + '" value="skip" onclick="updateAnsweredCount()" /> Не проверял</label>' +
+        '</div>' +
+        '<input id="note_' + testId + '" class="test-note" type="text" placeholder="Комментарий или наблюдение..." />';
+    }
+
+    function renderSlides() {
+      var slidesContainer = document.getElementById('slides');
+      var dotsContainer = document.getElementById('slide-dots');
+      var html = '';
+      var dots = '';
+      var slideIndex;
+      var testIndex;
+      var slide;
+      var test;
+      var cardNumber = 0;
+
+      testCounter = 0;
+
+      for (slideIndex = 0; slideIndex < slideData.length; slideIndex++) {
+        slide = slideData[slideIndex];
+        html += '<div id="slide_' + slideIndex + '" class="slide' +
+          (slideIndex === 0 ? ' active' : '') + '"><div class="slide-inner">';
+        html += '<h1>' + escapeHtml(slide.title) + '</h1>';
+        html += '<p class="slide-intro">' + escapeHtml(slide.intro) + '</p>';
+
+        if (slide.manual) {
+          html += '<div class="manual-panel">' +
+            '<strong>Результат действий</strong>' +
+            '<div id="action-output">Здесь появятся сообщения ручных тестов.</div>' +
+          '</div>';
+        }
+
+        if (slide.results) {
+          html += '<textarea id="report" spellcheck="false"></textarea>' +
+            '<div style="margin-top:10px;">' +
+              '<button class="action-button" type="button" onclick="generateReport()">Обновить отчёт</button>' +
+              '<button class="action-button" type="button" onclick="copyReport()">Копировать</button>' +
+              '<button class="action-button" type="button" onclick="downloadReport()">Скачать TXT</button>' +
+              '<button class="action-button secondary" type="button" onclick="resetAnswers()">Сбросить ответы</button>' +
+            '</div>';
+        }
+
+        for (testIndex = 0; testIndex < slide.tests.length; testIndex++) {
+          test = slide.tests[testIndex];
+          testCounter++;
+          cardNumber++;
+          html += '<div class="test-card">' +
+            '<div><span class="test-number">' + cardNumber + '</span>' +
+            '<span class="test-title">' + escapeHtml(test[1]) + '</span></div>' +
+            '<div class="test-description">' + escapeHtml(test[2]) + '</div>' +
+            '<div id="auto_' + test[0] + '" class="auto-result">Автопроверка...</div>' +
+            (test[4] ? '<div class="demo">' + test[4] + '</div>' : '') +
+            answerHtml(test[0]) +
+          '</div>';
+        }
+
+        html += '</div></div>';
+        dots += '<span id="dot_' + slideIndex + '" class="slide-dot' +
+          (slideIndex === 0 ? ' active' : '') + '"></span>';
+      }
+
+      slidesContainer.innerHTML = html;
+      dotsContainer.innerHTML = dots;
+    }
+
+    function runAllAutoTests() {
+      var slideIndex;
+      var testIndex;
+      var test;
+      var result;
+      var badge;
+
+      for (slideIndex = 0; slideIndex < slideData.length; slideIndex++) {
+        for (testIndex = 0; testIndex < slideData[slideIndex].tests.length; testIndex++) {
+          test = slideData[slideIndex].tests[testIndex];
+          result = runAutoTest(test[3]);
+          autoResults[test[0]] = result;
+          badge = document.getElementById('auto_' + test[0]);
+
+          if (badge) {
+            badge.className = 'auto-result auto-' + result.status;
+            setText(badge, 'Авто: ' + result.detail);
+          }
+        }
+      }
+    }
+
+    function drawCanvasDemo() {
+      var canvas = document.getElementById('engine-canvas');
+      var context;
+      var gradient;
+
+      if (!canvas || !canvas.getContext) { return; }
+
+      try {
+        context = canvas.getContext('2d');
+        gradient = context.createLinearGradient(0, 0, 180, 0);
+        gradient.addColorStop(0, '#4c8fdf');
+        gradient.addColorStop(0.5, '#63d0a4');
+        gradient.addColorStop(1, '#f2bf59');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 180, 48);
+        context.fillStyle = 'rgba(255,255,255,0.85)';
+        context.font = '15px Segoe UI';
+        context.fillText('Canvas работает', 25, 29);
+      } catch (error) {
+      }
+    }
+
+    function setupPointerPad() {
+      var pad = document.getElementById('pointer-pad');
+
+      if (!pad) { return; }
+
+      pad.onmousemove = function(event) {
+        event = event || window.event;
+        setText(pad, 'mouse: x=' + event.clientX + ', y=' + event.clientY);
+      };
+
+      if ('onpointermove' in pad) {
+        pad.onpointermove = function(event) {
+          event = event || window.event;
+          setText(pad,
+            'pointerType=' + event.pointerType +
+            ', pressure=' + event.pressure +
+            ', buttons=' + event.buttons
+          );
+        };
+      }
+    }
+
+    function showSlide(index) {
+      var oldSlide = document.getElementById('slide_' + currentSlide);
+      var oldDot = document.getElementById('dot_' + currentSlide);
+      var newSlide;
+      var newDot;
+      var percent;
+
+      if (index < 0) { index = 0; }
+      if (index >= slideData.length) { index = slideData.length - 1; }
+
+      if (oldSlide) { oldSlide.className = 'slide'; }
+      if (oldDot) { oldDot.className = 'slide-dot'; }
+
+      currentSlide = index;
+      newSlide = document.getElementById('slide_' + currentSlide);
+      newDot = document.getElementById('dot_' + currentSlide);
+
+      if (newSlide) {
+        newSlide.className = 'slide active';
+        newSlide.scrollTop = 0;
+      }
+      if (newDot) { newDot.className = 'slide-dot active'; }
+
+      percent = Math.round(((currentSlide + 1) / slideData.length) * 100);
+      document.getElementById('progress-fill').style.width = percent + '%';
+      setText(document.getElementById('progress-text'),
+        'Слайд ' + (currentSlide + 1) + ' из ' + slideData.length
+      );
+
+      document.getElementById('prev-button').disabled = currentSlide === 0;
+      setText(document.getElementById('next-button'),
+        currentSlide === slideData.length - 1 ? 'Готово' : 'Далее'
+      );
+
+      if (slideData[currentSlide].results) {
+        generateReport();
+      }
+
+      drawCanvasDemo();
+      setupPointerPad();
+    }
+
+    function previousSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function nextSlide() {
+      if (currentSlide < slideData.length - 1) {
+        showSlide(currentSlide + 1);
+      } else {
+        generateReport();
+      }
+    }
+
+    function getAnswer(testId) {
+      var options = document.getElementsByName('answer_' + testId);
+      var i;
+
+      for (i = 0; i < options.length; i++) {
+        if (options[i].checked) {
+          return options[i].value;
+        }
+      }
+
+      return '';
+    }
+
+    function answerLabel(value) {
+      if (value === 'yes') { return 'РАБОТАЕТ'; }
+      if (value === 'partial') { return 'ЧАСТИЧНО'; }
+      if (value === 'no') { return 'НЕ РАБОТАЕТ'; }
+      if (value === 'skip') { return 'НЕ ПРОВЕРЯЛ'; }
+      return 'БЕЗ ОТВЕТА';
+    }
+
+    function updateAnsweredCount() {
+      var answered = 0;
+      var slideIndex;
+      var testIndex;
+      var test;
+
+      for (slideIndex = 0; slideIndex < slideData.length; slideIndex++) {
+        for (testIndex = 0; testIndex < slideData[slideIndex].tests.length; testIndex++) {
+          test = slideData[slideIndex].tests[testIndex];
+          if (getAnswer(test[0])) {
+            answered++;
+          }
+        }
+      }
+
+      document.getElementById('brand-subtitle').innerHTML =
+        'Пошаговая проверка возможностей встроенного HTML-движка · отвечено ' +
+        answered + ' из ' + testCounter;
+    }
+
+    function generateReport() {
+      var lines = [];
+      var slideIndex;
+      var testIndex;
+      var test;
+      var auto;
+      var answer;
+      var noteElement;
+      var now = new Date();
+
+      lines.push('RUNPAD ENGINE LAB — ОТЧЁТ');
+      lines.push('Дата: ' + now.toLocaleString());
+      lines.push('User Agent: ' + navigator.userAgent);
+      lines.push('documentMode: ' + (document.documentMode || 'нет'));
+      lines.push('Протокол: ' + window.location.protocol);
+      lines.push('Экран страницы: ' +
+        (document.documentElement.clientWidth || window.innerWidth) + 'x' +
+        (document.documentElement.clientHeight || window.innerHeight));
+      lines.push('');
+
+      for (slideIndex = 0; slideIndex < slideData.length; slideIndex++) {
+        if (slideData[slideIndex].tests.length === 0) { continue; }
+
+        lines.push('=== ' + slideData[slideIndex].title + ' ===');
+
+        for (testIndex = 0; testIndex < slideData[slideIndex].tests.length; testIndex++) {
+          test = slideData[slideIndex].tests[testIndex];
+          auto = autoResults[test[0]] || autoResult('info', 'нет данных');
+          answer = getAnswer(test[0]);
+          noteElement = document.getElementById('note_' + test[0]);
+
+          lines.push(
+            test[1] +
+            ' | авто: ' + auto.status.toUpperCase() + ' (' + auto.detail + ')' +
+            ' | вручную: ' + answerLabel(answer) +
+            (noteElement && noteElement.value ? ' | комментарий: ' + noteElement.value : '')
+          );
+        }
+
+        lines.push('');
+      }
+
+      if (document.getElementById('report')) {
+        document.getElementById('report').value = lines.join('\r\n');
+      }
+
+      return lines.join('\r\n');
+    }
+
+    function copyReport() {
+      var report = document.getElementById('report');
+      var copied = false;
+
+      generateReport();
+      report.focus();
+      report.select();
+
+      try {
+        copied = document.execCommand('copy');
+      } catch (error) {
+        copied = false;
+      }
+
+      if (copied) {
+        alert('Отчёт скопирован в буфер обмена.');
+      } else {
+        alert('Автокопирование недоступно. Нажмите Ctrl+C в выделенном поле.');
+      }
+    }
+
+    function downloadReport() {
+      var text = generateReport();
+      var blob;
+      var url;
+      var link;
+
+      try {
+        if (!window.Blob || !window.URL || !window.URL.createObjectURL) {
+          throw new Error('Blob или URL API недоступны');
+        }
+
+        blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        url = window.URL.createObjectURL(blob);
+        link = document.createElement('a');
+        link.href = url;
+        link.download = 'runpad-engine-report.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(function() {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+      } catch (error) {
+        alert('Скачивание недоступно: ' + error.message + '. Используйте кнопку «Копировать».');
+      }
+    }
+
+    function resetAnswers() {
+      var inputs;
+      var notes;
+      var i;
+
+      if (!confirm('Сбросить все отметки и комментарии?')) { return; }
+
+      inputs = document.getElementsByTagName('input');
+
+      for (i = 0; i < inputs.length; i++) {
+        if (inputs[i].type === 'radio') {
+          inputs[i].checked = false;
+        } else if (inputs[i].className === 'test-note') {
+          inputs[i].value = '';
+        }
+      }
+
+      updateAnsweredCount();
+      generateReport();
+    }
+
+    function setActionOutput(text) {
+      setText(document.getElementById('action-output'), text);
+    }
+
+    function testShellExec(target) {
+      if (!bridgeSupported()) {
+        setActionOutput('external.doShellExec не обнаружен.');
+        return;
+      }
+
+      if (!confirm('Запустить: ' + target + ' ?')) { return; }
+
+      try {
+        window.external.doShellExec(target);
+        setActionOutput('Команда передана в Runpad: ' + target);
+      } catch (error) {
+        setActionOutput('Ошибка doShellExec: ' + error.message);
+      }
+    }
+
+    function testWindowOpen() {
+      try {
+        var testWindow = window.open('about:blank', '_blank');
+        if (testWindow) {
+          testWindow.document.write('<p>window.open работает</p>');
+          setActionOutput('Новое окно было создано.');
+        } else {
+          setActionOutput('window.open вернул null: вероятно, окно заблокировано.');
+        }
+      } catch (error) {
+        setActionOutput('Ошибка window.open: ' + error.message);
+      }
+    }
+
+    function testFullscreen() {
+      var element = document.documentElement;
+      var method =
+        element.requestFullscreen ||
+        element.msRequestFullscreen ||
+        element.webkitRequestFullscreen;
+
+      if (!method) {
+        setActionOutput('Fullscreen API не обнаружен.');
+        return;
+      }
+
+      try {
+        method.call(element);
+        setActionOutput('Запрос полноэкранного режима отправлен.');
+      } catch (error) {
+        setActionOutput('Ошибка Fullscreen API: ' + error.message);
+      }
+    }
+
+    function testClipboard() {
+      var text = 'Runpad clipboard test';
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          navigator.clipboard.writeText(text);
+          setActionOutput('Запрос Clipboard API отправлен. Проверьте вставкой Ctrl+V.');
+          return;
+        } catch (error) {
+        }
+      }
+
+      try {
+        var helper = document.createElement('textarea');
+        helper.value = text;
+        document.body.appendChild(helper);
+        helper.select();
+        var copied = document.execCommand('copy');
+        document.body.removeChild(helper);
+        setActionOutput(copied ?
+          'Старый execCommand(copy) сработал. Проверьте Ctrl+V.' :
+          'execCommand(copy) вернул false.');
+      } catch (copyError) {
+        setActionOutput('Ошибка буфера обмена: ' + copyError.message);
+      }
+    }
+
+    function readSelectedFile(input) {
+      var output = document.getElementById('file-output');
+      var file;
+      var reader;
+
+      if (!input.files || !input.files.length) {
+        setText(output, 'Файл не выбран или File API недоступен.');
+        return;
+      }
+
+      file = input.files[0];
+
+      if (!window.FileReader) {
+        setText(output, 'FileReader недоступен. Имя: ' + file.name);
+        return;
+      }
+
+      reader = new FileReader();
+
+      reader.onload = function() {
+        var preview = String(reader.result || '').substring(0, 180);
+        setText(output,
+          'Файл прочитан: ' + file.name +
+          ', размер ' + file.size + ' байт. Начало: ' + preview
+        );
+      };
+
+      reader.onerror = function() {
+        setText(output, 'Ошибка чтения файла.');
+      };
+
+      reader.readAsText(file);
+    }
+
+    window.onload = function() {
+      renderSlides();
+      runAllAutoTests();
+      showSlide(0);
+      updateAnsweredCount();
+    };
+  </script>
+</body>
+</html>
