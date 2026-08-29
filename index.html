@@ -1431,7 +1431,9 @@
       var canvas = document.getElementById('atmosphere-canvas');
       var context;
       var requestFrame;
-      var particleCount = 32;
+      var particleCount = 18;
+      var renderScale = 0.5;
+      var targetFrameInterval = 1000 / 24;
       var i;
 
       if (!canvas || !canvas.getContext) {
@@ -1464,7 +1466,9 @@
         pointerVisible: false,
         width: 1,
         height: 1,
-        lastTime: 0
+        lastTime: 0,
+        lastRenderTime: 0,
+        glowSprite: makeAtmosphereSprite([255, 235, 188])
       };
 
       function resizeAtmosphere() {
@@ -1476,10 +1480,10 @@
           height = 1;
         }
 
-        atmosphereState.width = width;
-        atmosphereState.height = height;
-        canvas.width = width;
-        canvas.height = height;
+        atmosphereState.width = Math.max(1, Math.floor(width * renderScale));
+        atmosphereState.height = Math.max(1, Math.floor(height * renderScale));
+        canvas.width = atmosphereState.width;
+        canvas.height = atmosphereState.height;
       }
 
       function resetParticle(particle, anywhere) {
@@ -1510,8 +1514,8 @@
       }
 
       function pointerMove(event) {
-        atmosphereState.pointerX = event.clientX;
-        atmosphereState.pointerY = event.clientY - 30;
+        atmosphereState.pointerX = event.clientX * renderScale;
+        atmosphereState.pointerY = (event.clientY - 30) * renderScale;
         atmosphereState.pointerVisible = true;
       }
 
@@ -1534,16 +1538,18 @@
           node = node.parentNode;
         }
 
-        addRipple(event.clientX, event.clientY);
+        addRipple(
+          event.clientX * renderScale,
+          30 + (event.clientY - 30) * renderScale
+        );
       }
 
       function drawAtmosphere(timestamp) {
         var state = atmosphereState;
         var now = timestamp || new Date().getTime();
-        var delta = state.lastTime ? now - state.lastTime : 16;
+        var delta;
         var pointerOffsetX = 0;
         var pointerOffsetY = 0;
-        var glow;
         var particle;
         var sprite;
         var size;
@@ -1551,11 +1557,24 @@
         var ripple;
         var r;
 
-        if (delta > 50) {
-          delta = 50;
+        if (
+          state.lastRenderTime &&
+          now - state.lastRenderTime < targetFrameInterval
+        ) {
+          requestFrame(drawAtmosphere);
+          return;
         }
-        state.lastTime = now;
 
+        delta = state.lastRenderTime ?
+          now - state.lastRenderTime :
+          targetFrameInterval;
+
+        if (delta > 80) {
+          delta = 80;
+        }
+
+        state.lastRenderTime = now;
+        state.lastTime = now;
         context.clearRect(0, 0, state.width, state.height);
 
         if (state.pointerVisible) {
@@ -1564,23 +1583,15 @@
           pointerOffsetY =
             (state.pointerY - state.height / 2) / state.height * 5;
 
-          glow = context.createRadialGradient(
-            state.pointerX,
-            state.pointerY,
-            0,
-            state.pointerX,
-            state.pointerY,
-            125
+          context.globalAlpha = 0.12;
+          context.drawImage(
+            state.glowSprite,
+            state.pointerX - 62,
+            state.pointerY - 62,
+            124,
+            124
           );
-          glow.addColorStop(0, 'rgba(255,235,188,0.070)');
-          glow.addColorStop(1, 'rgba(255,235,188,0)');
-          context.fillStyle = glow;
-          context.fillRect(
-            state.pointerX - 125,
-            state.pointerY - 125,
-            250,
-            250
-          );
+          context.globalAlpha = 1;
         }
 
         for (i = 0; i < state.particles.length; i++) {
