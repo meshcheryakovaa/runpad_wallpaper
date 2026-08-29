@@ -261,13 +261,105 @@
       margin-top: 4px;
     }
 
-    
+
+    /* ── Падающие осенние листья ── */
+    #leaves-layer {
+      position: fixed;
+      top: 30px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .falling-leaf {
+      position: absolute;
+      top: -40px;
+      width: 18px;
+      height: 13px;
+      border-radius: 100% 0 100% 0;
+      opacity: 0.85;
+      pointer-events: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.22);
+      -webkit-animation-timing-function: linear;
+      animation-timing-function: linear;
+      -webkit-animation-iteration-count: 1;
+      animation-iteration-count: 1;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+
+    .falling-leaf:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      width: 1px;
+      height: 75%;
+      background: rgba(80, 45, 15, 0.55);
+      -webkit-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+      -webkit-transform-origin: top center;
+      transform-origin: top center;
+    }
+
+    .leaf-gold   { background: #d99b34; }
+    .leaf-orange { background: #c9652c; }
+    .leaf-red    { background: #a63d2f; }
+    .leaf-brown  { background: #8a552a; }
+
+    .leaf-drift-left {
+      -webkit-animation-name: leaf-fall-left;
+      animation-name: leaf-fall-left;
+    }
+
+    .leaf-drift-right {
+      -webkit-animation-name: leaf-fall-right;
+      animation-name: leaf-fall-right;
+    }
+
+    @-webkit-keyframes leaf-fall-left {
+      0%   { top: -40px; margin-left: 0;     -webkit-transform: rotate(0deg); }
+      25%  {              margin-left: 35px; -webkit-transform: rotate(100deg); }
+      50%  {              margin-left: -25px;-webkit-transform: rotate(190deg); }
+      75%  {              margin-left: 25px; -webkit-transform: rotate(290deg); }
+      100% { top: 110%;   margin-left: -15px;-webkit-transform: rotate(420deg); }
+    }
+
+    @keyframes leaf-fall-left {
+      0%   { top: -40px; margin-left: 0;     transform: rotate(0deg); }
+      25%  {              margin-left: 35px; transform: rotate(100deg); }
+      50%  {              margin-left: -25px;transform: rotate(190deg); }
+      75%  {              margin-left: 25px; transform: rotate(290deg); }
+      100% { top: 110%;   margin-left: -15px;transform: rotate(420deg); }
+    }
+
+    @-webkit-keyframes leaf-fall-right {
+      0%   { top: -40px; margin-left: 0;     -webkit-transform: rotate(20deg); }
+      25%  {              margin-left: -30px;-webkit-transform: rotate(-90deg); }
+      50%  {              margin-left: 30px; -webkit-transform: rotate(-180deg); }
+      75%  {              margin-left: -20px;-webkit-transform: rotate(-280deg); }
+      100% { top: 110%;   margin-left: 20px; -webkit-transform: rotate(-410deg); }
+    }
+
+    @keyframes leaf-fall-right {
+      0%   { top: -40px; margin-left: 0;     transform: rotate(20deg); }
+      25%  {              margin-left: -30px;transform: rotate(-90deg); }
+      50%  {              margin-left: 30px; transform: rotate(-180deg); }
+      75%  {              margin-left: -20px;transform: rotate(-280deg); }
+      100% { top: 110%;   margin-left: 20px; transform: rotate(-410deg); }
+    }
   </style>
 </head>
 <body>
 
   <!-- Фон -->
   <div id="bg"></div>
+
+  <!-- Декоративный слой с падающими листьями -->
+  <div id="leaves-layer"></div>
 
   <!-- Менюбар -->
   <div id="menubar">
@@ -463,6 +555,58 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
+
+    /* ── Падающие осенние листья ── */
+    var leavesLayer = document.getElementById('leaves-layer');
+    var leafColors = ['leaf-gold', 'leaf-orange', 'leaf-red', 'leaf-brown'];
+    var leafDrifts = ['leaf-drift-left', 'leaf-drift-right'];
+    var activeLeaves = 0;
+    var maxLeaves = 18;
+
+    function removeLeaf(leaf) {
+      if (leaf && leaf.parentNode) {
+        leaf.parentNode.removeChild(leaf);
+        activeLeaves--;
+      }
+    }
+
+    function createLeaf(startInsideScreen) {
+      if (!leavesLayer || activeLeaves >= maxLeaves) {
+        return;
+      }
+
+      var leaf = document.createElement('span');
+      var duration = 8000 + Math.floor(Math.random() * 5000);
+      var size = 11 + Math.floor(Math.random() * 12);
+      var delay = startInsideScreen ? -Math.floor(Math.random() * duration) : 0;
+      var colorClass = leafColors[Math.floor(Math.random() * leafColors.length)];
+      var driftClass = leafDrifts[Math.floor(Math.random() * leafDrifts.length)];
+
+      leaf.className = 'falling-leaf ' + colorClass + ' ' + driftClass;
+      leaf.style.left = Math.floor(Math.random() * 96) + '%';
+      leaf.style.width = size + 'px';
+      leaf.style.height = Math.round(size * 0.72) + 'px';
+      leaf.style.opacity = (0.55 + Math.random() * 0.35).toFixed(2);
+      leaf.style.animationDuration = duration + 'ms';
+      leaf.style.WebkitAnimationDuration = duration + 'ms';
+      leaf.style.animationDelay = delay + 'ms';
+      leaf.style.WebkitAnimationDelay = delay + 'ms';
+
+      leavesLayer.appendChild(leaf);
+      activeLeaves++;
+
+      setTimeout(function() {
+        removeLeaf(leaf);
+      }, duration + delay + 800);
+    }
+
+    for (var leafIndex = 0; leafIndex < 8; leafIndex++) {
+      createLeaf(true);
+    }
+
+    setInterval(function() {
+      createLeaf(false);
+    }, 850);
   </script>
 
 </body>
