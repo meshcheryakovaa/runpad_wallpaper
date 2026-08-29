@@ -430,14 +430,34 @@
       animation-fill-mode: both;
     }
 
-    .leaf-drift-left {
-      -webkit-animation-name: realistic-leaf-fall-left;
-      animation-name: realistic-leaf-fall-left;
+    .leaf-path-slow {
+      -webkit-animation-name: leaf-fall-slow;
+      animation-name: leaf-fall-slow;
     }
 
-    .leaf-drift-right {
-      -webkit-animation-name: realistic-leaf-fall-right;
-      animation-name: realistic-leaf-fall-right;
+    .leaf-path-spiral-left {
+      -webkit-animation-name: leaf-fall-spiral-left;
+      animation-name: leaf-fall-spiral-left;
+    }
+
+    .leaf-path-spiral-right {
+      -webkit-animation-name: leaf-fall-spiral-right;
+      animation-name: leaf-fall-spiral-right;
+    }
+
+    .leaf-path-glide-left {
+      -webkit-animation-name: leaf-fall-glide-left;
+      animation-name: leaf-fall-glide-left;
+    }
+
+    .leaf-path-glide-right {
+      -webkit-animation-name: leaf-fall-glide-right;
+      animation-name: leaf-fall-glide-right;
+    }
+
+    .leaf-path-tumble {
+      -webkit-animation-name: leaf-fall-tumble;
+      animation-name: leaf-fall-tumble;
     }
 
     .settled-leaf {
@@ -447,68 +467,182 @@
       opacity: 0.92;
     }
 
-    .wind-leaf {
-      top: auto;
-      -webkit-animation-name: leaf-wind-left;
-      animation-name: leaf-wind-left;
-      -webkit-animation-timing-function: ease-in;
-      animation-timing-function: ease-in;
+    .stream-leaf {
+      left: 103%;
+      -webkit-animation-timing-function: ease-in-out;
+      animation-timing-function: ease-in-out;
       -webkit-animation-iteration-count: 1;
       animation-iteration-count: 1;
       -webkit-animation-fill-mode: forwards;
       animation-fill-mode: forwards;
     }
 
-    @-webkit-keyframes realistic-leaf-fall-left {
+    .leaf-stream-up {
+      -webkit-animation-name: leaf-stream-up;
+      animation-name: leaf-stream-up;
+    }
+
+    .leaf-stream-down {
+      -webkit-animation-name: leaf-stream-down;
+      animation-name: leaf-stream-down;
+    }
+
+    @-webkit-keyframes leaf-fall-slow {
       0%   { top: -45px; margin-left: 0;     -webkit-transform: rotate(0deg) scaleY(1); }
-      18%  {              margin-left: 55px; -webkit-transform: rotate(85deg) scaleY(0.35); }
-      38%  {              margin-left: -18px;-webkit-transform: rotate(175deg) scaleY(0.95); }
-      60%  {              margin-left: 62px; -webkit-transform: rotate(285deg) scaleY(0.28); }
-      80%  {              margin-left: -32px;-webkit-transform: rotate(395deg) scaleY(0.82); }
-      100% { top: 103%;   margin-left: 12px; -webkit-transform: rotate(520deg) scaleY(0.52); }
+      15%  {              margin-left: 26px; -webkit-transform: rotate(45deg) scaleY(0.62); }
+      31%  {              margin-left: -18px;-webkit-transform: rotate(95deg) scaleY(0.92); }
+      48%  {              margin-left: 34px; -webkit-transform: rotate(150deg) scaleY(0.48); }
+      65%  {              margin-left: -25px;-webkit-transform: rotate(215deg) scaleY(0.88); }
+      82%  {              margin-left: 20px; -webkit-transform: rotate(285deg) scaleY(0.55); }
+      100% { top: 103%;   margin-left: -8px; -webkit-transform: rotate(350deg) scaleY(0.84); }
     }
 
-    @keyframes realistic-leaf-fall-left {
+    @keyframes leaf-fall-slow {
       0%   { top: -45px; margin-left: 0;     transform: rotate(0deg) scaleY(1); }
-      18%  {              margin-left: 55px; transform: rotate(85deg) scaleY(0.35); }
-      38%  {              margin-left: -18px;transform: rotate(175deg) scaleY(0.95); }
-      60%  {              margin-left: 62px; transform: rotate(285deg) scaleY(0.28); }
-      80%  {              margin-left: -32px;transform: rotate(395deg) scaleY(0.82); }
-      100% { top: 103%;   margin-left: 12px; transform: rotate(520deg) scaleY(0.52); }
+      15%  {              margin-left: 26px; transform: rotate(45deg) scaleY(0.62); }
+      31%  {              margin-left: -18px;transform: rotate(95deg) scaleY(0.92); }
+      48%  {              margin-left: 34px; transform: rotate(150deg) scaleY(0.48); }
+      65%  {              margin-left: -25px;transform: rotate(215deg) scaleY(0.88); }
+      82%  {              margin-left: 20px; transform: rotate(285deg) scaleY(0.55); }
+      100% { top: 103%;   margin-left: -8px; transform: rotate(350deg) scaleY(0.84); }
     }
 
-    @-webkit-keyframes realistic-leaf-fall-right {
+    @-webkit-keyframes leaf-fall-spiral-left {
+      0%   { top: -45px; margin-left: 0;      -webkit-transform: rotate(0deg) scaleY(1); }
+      14%  {              margin-left: 75px;  -webkit-transform: rotate(120deg) scaleY(0.32); }
+      29%  {              margin-left: 8px;   -webkit-transform: rotate(245deg) scaleY(0.94); }
+      44%  {              margin-left: -82px; -webkit-transform: rotate(370deg) scaleY(0.28); }
+      60%  {              margin-left: -12px; -webkit-transform: rotate(510deg) scaleY(0.90); }
+      76%  {              margin-left: 92px;  -webkit-transform: rotate(650deg) scaleY(0.35); }
+      90%  {              margin-left: 18px;  -webkit-transform: rotate(790deg) scaleY(0.86); }
+      100% { top: 103%;   margin-left: -34px; -webkit-transform: rotate(900deg) scaleY(0.50); }
+    }
+
+    @keyframes leaf-fall-spiral-left {
+      0%   { top: -45px; margin-left: 0;      transform: rotate(0deg) scaleY(1); }
+      14%  {              margin-left: 75px;  transform: rotate(120deg) scaleY(0.32); }
+      29%  {              margin-left: 8px;   transform: rotate(245deg) scaleY(0.94); }
+      44%  {              margin-left: -82px; transform: rotate(370deg) scaleY(0.28); }
+      60%  {              margin-left: -12px; transform: rotate(510deg) scaleY(0.90); }
+      76%  {              margin-left: 92px;  transform: rotate(650deg) scaleY(0.35); }
+      90%  {              margin-left: 18px;  transform: rotate(790deg) scaleY(0.86); }
+      100% { top: 103%;   margin-left: -34px; transform: rotate(900deg) scaleY(0.50); }
+    }
+
+    @-webkit-keyframes leaf-fall-spiral-right {
+      0%   { top: -45px; margin-left: 0;      -webkit-transform: rotate(15deg) scaleY(0.90); }
+      15%  {              margin-left: -78px; -webkit-transform: rotate(-125deg) scaleY(0.30); }
+      30%  {              margin-left: -5px;  -webkit-transform: rotate(-255deg) scaleY(0.96); }
+      46%  {              margin-left: 86px;  -webkit-transform: rotate(-390deg) scaleY(0.26); }
+      61%  {              margin-left: 14px;  -webkit-transform: rotate(-525deg) scaleY(0.88); }
+      77%  {              margin-left: -94px; -webkit-transform: rotate(-665deg) scaleY(0.34); }
+      91%  {              margin-left: -16px; -webkit-transform: rotate(-800deg) scaleY(0.82); }
+      100% { top: 103%;   margin-left: 38px;  -webkit-transform: rotate(-910deg) scaleY(0.48); }
+    }
+
+    @keyframes leaf-fall-spiral-right {
+      0%   { top: -45px; margin-left: 0;      transform: rotate(15deg) scaleY(0.90); }
+      15%  {              margin-left: -78px; transform: rotate(-125deg) scaleY(0.30); }
+      30%  {              margin-left: -5px;  transform: rotate(-255deg) scaleY(0.96); }
+      46%  {              margin-left: 86px;  transform: rotate(-390deg) scaleY(0.26); }
+      61%  {              margin-left: 14px;  transform: rotate(-525deg) scaleY(0.88); }
+      77%  {              margin-left: -94px; transform: rotate(-665deg) scaleY(0.34); }
+      91%  {              margin-left: -16px; transform: rotate(-800deg) scaleY(0.82); }
+      100% { top: 103%;   margin-left: 38px;  transform: rotate(-910deg) scaleY(0.48); }
+    }
+
+    @-webkit-keyframes leaf-fall-glide-left {
       0%   { top: -45px; margin-left: 0;      -webkit-transform: rotate(20deg) scaleY(0.85); }
-      20%  {              margin-left: -48px; -webkit-transform: rotate(-95deg) scaleY(0.30); }
-      42%  {              margin-left: 28px;  -webkit-transform: rotate(-205deg) scaleY(1); }
-      63%  {              margin-left: -58px; -webkit-transform: rotate(-315deg) scaleY(0.34); }
-      82%  {              margin-left: 38px;  -webkit-transform: rotate(-405deg) scaleY(0.78); }
-      100% { top: 103%;   margin-left: -10px; -webkit-transform: rotate(-530deg) scaleY(0.48); }
+      20%  {              margin-left: -38px; -webkit-transform: rotate(-35deg) scaleY(0.48); }
+      42%  {              margin-left: -92px; -webkit-transform: rotate(35deg) scaleY(0.92); }
+      63%  {              margin-left: -148px;-webkit-transform: rotate(-25deg) scaleY(0.42); }
+      82%  {              margin-left: -205px;-webkit-transform: rotate(40deg) scaleY(0.88); }
+      100% { top: 103%;   margin-left: -255px;-webkit-transform: rotate(-10deg) scaleY(0.58); }
     }
 
-    @keyframes realistic-leaf-fall-right {
+    @keyframes leaf-fall-glide-left {
       0%   { top: -45px; margin-left: 0;      transform: rotate(20deg) scaleY(0.85); }
-      20%  {              margin-left: -48px; transform: rotate(-95deg) scaleY(0.30); }
-      42%  {              margin-left: 28px;  transform: rotate(-205deg) scaleY(1); }
-      63%  {              margin-left: -58px; transform: rotate(-315deg) scaleY(0.34); }
-      82%  {              margin-left: 38px;  transform: rotate(-405deg) scaleY(0.78); }
-      100% { top: 103%;   margin-left: -10px; transform: rotate(-530deg) scaleY(0.48); }
+      20%  {              margin-left: -38px; transform: rotate(-35deg) scaleY(0.48); }
+      42%  {              margin-left: -92px; transform: rotate(35deg) scaleY(0.92); }
+      63%  {              margin-left: -148px;transform: rotate(-25deg) scaleY(0.42); }
+      82%  {              margin-left: -205px;transform: rotate(40deg) scaleY(0.88); }
+      100% { top: 103%;   margin-left: -255px;transform: rotate(-10deg) scaleY(0.58); }
     }
 
-    @-webkit-keyframes leaf-wind-left {
-      0%   { margin-left: 0;      margin-bottom: 0;     -webkit-transform: rotate(0deg) scaleY(1); }
-      18%  { margin-left: -80px;  margin-bottom: 75px;  -webkit-transform: rotate(-110deg) scaleY(0.35); }
-      48%  { margin-left: -42vw;  margin-bottom: 38px;  -webkit-transform: rotate(-380deg) scaleY(0.90); }
-      72%  { margin-left: -76vw;  margin-bottom: 105px; -webkit-transform: rotate(-650deg) scaleY(0.30); }
-      100% { margin-left: -120vw; margin-bottom: 145px; -webkit-transform: rotate(-940deg) scaleY(0.70); }
+    @-webkit-keyframes leaf-fall-glide-right {
+      0%   { top: -45px; margin-left: 0;     -webkit-transform: rotate(-15deg) scaleY(0.88); }
+      21%  {              margin-left: 42px; -webkit-transform: rotate(38deg) scaleY(0.45); }
+      43%  {              margin-left: 98px; -webkit-transform: rotate(-32deg) scaleY(0.94); }
+      64%  {              margin-left: 155px;-webkit-transform: rotate(30deg) scaleY(0.40); }
+      83%  {              margin-left: 212px;-webkit-transform: rotate(-42deg) scaleY(0.86); }
+      100% { top: 103%;   margin-left: 260px;-webkit-transform: rotate(12deg) scaleY(0.56); }
     }
 
-    @keyframes leaf-wind-left {
-      0%   { margin-left: 0;      margin-bottom: 0;     transform: rotate(0deg) scaleY(1); }
-      18%  { margin-left: -80px;  margin-bottom: 75px;  transform: rotate(-110deg) scaleY(0.35); }
-      48%  { margin-left: -42vw;  margin-bottom: 38px;  transform: rotate(-380deg) scaleY(0.90); }
-      72%  { margin-left: -76vw;  margin-bottom: 105px; transform: rotate(-650deg) scaleY(0.30); }
-      100% { margin-left: -120vw; margin-bottom: 145px; transform: rotate(-940deg) scaleY(0.70); }
+    @keyframes leaf-fall-glide-right {
+      0%   { top: -45px; margin-left: 0;     transform: rotate(-15deg) scaleY(0.88); }
+      21%  {              margin-left: 42px; transform: rotate(38deg) scaleY(0.45); }
+      43%  {              margin-left: 98px; transform: rotate(-32deg) scaleY(0.94); }
+      64%  {              margin-left: 155px;transform: rotate(30deg) scaleY(0.40); }
+      83%  {              margin-left: 212px;transform: rotate(-42deg) scaleY(0.86); }
+      100% { top: 103%;   margin-left: 260px;transform: rotate(12deg) scaleY(0.56); }
+    }
+
+    @-webkit-keyframes leaf-fall-tumble {
+      0%   { top: -45px; margin-left: 0;      -webkit-transform: rotate(0deg) scaleY(1); }
+      12%  {              margin-left: 48px;  -webkit-transform: rotate(150deg) scaleY(0.22); }
+      27%  {              margin-left: -42px; -webkit-transform: rotate(300deg) scaleY(0.95); }
+      41%  {              margin-left: 70px;  -webkit-transform: rotate(470deg) scaleY(0.25); }
+      58%  {              margin-left: -65px; -webkit-transform: rotate(650deg) scaleY(0.90); }
+      74%  {              margin-left: 88px;  -webkit-transform: rotate(830deg) scaleY(0.28); }
+      89%  {              margin-left: -36px; -webkit-transform: rotate(1010deg) scaleY(0.84); }
+      100% { top: 103%;   margin-left: 15px;  -webkit-transform: rotate(1150deg) scaleY(0.44); }
+    }
+
+    @keyframes leaf-fall-tumble {
+      0%   { top: -45px; margin-left: 0;      transform: rotate(0deg) scaleY(1); }
+      12%  {              margin-left: 48px;  transform: rotate(150deg) scaleY(0.22); }
+      27%  {              margin-left: -42px; transform: rotate(300deg) scaleY(0.95); }
+      41%  {              margin-left: 70px;  transform: rotate(470deg) scaleY(0.25); }
+      58%  {              margin-left: -65px; transform: rotate(650deg) scaleY(0.90); }
+      74%  {              margin-left: 88px;  transform: rotate(830deg) scaleY(0.28); }
+      89%  {              margin-left: -36px; transform: rotate(1010deg) scaleY(0.84); }
+      100% { top: 103%;   margin-left: 15px;  transform: rotate(1150deg) scaleY(0.44); }
+    }
+
+    @-webkit-keyframes leaf-stream-up {
+      0%   { margin-left: 0;      margin-top: 0;     -webkit-transform: rotate(0deg) scaleY(0.82); }
+      18%  { margin-left: -18vw;  margin-top: -42px; -webkit-transform: rotate(-190deg) scaleY(0.30); }
+      39%  { margin-left: -43vw;  margin-top: 18px;  -webkit-transform: rotate(-410deg) scaleY(0.92); }
+      61%  { margin-left: -68vw;  margin-top: -55px; -webkit-transform: rotate(-650deg) scaleY(0.26); }
+      82%  { margin-left: -94vw;  margin-top: 12px;  -webkit-transform: rotate(-890deg) scaleY(0.86); }
+      100% { margin-left: -123vw; margin-top: -28px; -webkit-transform: rotate(-1120deg) scaleY(0.45); }
+    }
+
+    @keyframes leaf-stream-up {
+      0%   { margin-left: 0;      margin-top: 0;     transform: rotate(0deg) scaleY(0.82); }
+      18%  { margin-left: -18vw;  margin-top: -42px; transform: rotate(-190deg) scaleY(0.30); }
+      39%  { margin-left: -43vw;  margin-top: 18px;  transform: rotate(-410deg) scaleY(0.92); }
+      61%  { margin-left: -68vw;  margin-top: -55px; transform: rotate(-650deg) scaleY(0.26); }
+      82%  { margin-left: -94vw;  margin-top: 12px;  transform: rotate(-890deg) scaleY(0.86); }
+      100% { margin-left: -123vw; margin-top: -28px; transform: rotate(-1120deg) scaleY(0.45); }
+    }
+
+    @-webkit-keyframes leaf-stream-down {
+      0%   { margin-left: 0;      margin-top: 0;     -webkit-transform: rotate(15deg) scaleY(0.88); }
+      20%  { margin-left: -22vw;  margin-top: 38px;  -webkit-transform: rotate(-210deg) scaleY(0.28); }
+      41%  { margin-left: -47vw;  margin-top: -20px; -webkit-transform: rotate(-445deg) scaleY(0.95); }
+      62%  { margin-left: -72vw;  margin-top: 52px;  -webkit-transform: rotate(-680deg) scaleY(0.24); }
+      83%  { margin-left: -98vw;  margin-top: -12px; -webkit-transform: rotate(-920deg) scaleY(0.84); }
+      100% { margin-left: -126vw; margin-top: 32px;  -webkit-transform: rotate(-1160deg) scaleY(0.42); }
+    }
+
+    @keyframes leaf-stream-down {
+      0%   { margin-left: 0;      margin-top: 0;     transform: rotate(15deg) scaleY(0.88); }
+      20%  { margin-left: -22vw;  margin-top: 38px;  transform: rotate(-210deg) scaleY(0.28); }
+      41%  { margin-left: -47vw;  margin-top: -20px; transform: rotate(-445deg) scaleY(0.95); }
+      62%  { margin-left: -72vw;  margin-top: 52px;  transform: rotate(-680deg) scaleY(0.24); }
+      83%  { margin-left: -98vw;  margin-top: -12px; transform: rotate(-920deg) scaleY(0.84); }
+      100% { margin-left: -126vw; margin-top: 32px;  transform: rotate(-1160deg) scaleY(0.42); }
     }
   </style>
 </head>
@@ -747,19 +881,26 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    /* ── Реалистичные листья, накопление и порывы ветра ── */
+    /* ── Разные траектории, клубки и потоки листьев ── */
     var leavesLayer = document.getElementById('leaves-layer');
     var leafColors = [
       'leaf-gold', 'leaf-amber', 'leaf-orange',
       'leaf-red', 'leaf-brown', 'leaf-olive'
     ];
     var leafShapes = ['leaf-shape-lobed', 'leaf-shape-oval'];
-    var leafDrifts = ['leaf-drift-left', 'leaf-drift-right'];
-    var activeFallingLeaves = 0;
+    var leafPaths = [
+      'leaf-path-slow',
+      'leaf-path-slow',
+      'leaf-path-spiral-left',
+      'leaf-path-spiral-right',
+      'leaf-path-glide-left',
+      'leaf-path-glide-right',
+      'leaf-path-tumble'
+    ];
+    var activeMovingLeaves = 0;
     var settledLeaves = [];
-    var maxFallingLeaves = 32;
+    var maxMovingLeaves = 44;
     var maxSettledLeaves = 60;
-    var windInProgress = false;
 
     function removeLeafElement(leaf) {
       if (leaf && leaf.parentNode) {
@@ -773,16 +914,66 @@
       leaf.style.msTransform = value;
     }
 
+    function buildLeafElement(size) {
+      var leaf = document.createElement('span');
+      var surface = document.createElement('span');
+      var vein = document.createElement('span');
+      var stem = document.createElement('span');
+      var colorClass = leafColors[Math.floor(Math.random() * leafColors.length)];
+      var shapeClass = leafShapes[Math.floor(Math.random() * leafShapes.length)];
+
+      leaf.leafColorClass = colorClass;
+      leaf.leafShapeClass = shapeClass;
+      surface.className = 'leaf-surface';
+      vein.className = 'leaf-vein';
+      stem.className = 'leaf-stem';
+      surface.appendChild(vein);
+      leaf.appendChild(surface);
+      leaf.appendChild(stem);
+      leaf.style.width = size + 'px';
+      leaf.style.height = Math.round(size * 1.12) + 'px';
+      leaf.style.opacity = (0.62 + Math.random() * 0.32).toFixed(2);
+
+      return leaf;
+    }
+
+    function getPathDuration(pathClass) {
+      if (pathClass === 'leaf-path-slow') {
+        return 16000 + Math.floor(Math.random() * 6500);
+      }
+      if (
+        pathClass === 'leaf-path-spiral-left' ||
+        pathClass === 'leaf-path-spiral-right'
+      ) {
+        return 11000 + Math.floor(Math.random() * 5500);
+      }
+      if (
+        pathClass === 'leaf-path-glide-left' ||
+        pathClass === 'leaf-path-glide-right'
+      ) {
+        return 9000 + Math.floor(Math.random() * 4500);
+      }
+      return 8500 + Math.floor(Math.random() * 4500);
+    }
+
     function settleLeaf(leaf) {
       if (!leaf || !leaf.parentNode || leaf.leafState !== 'falling') {
         return;
       }
 
-      var landingLeft = leaf.offsetLeft;
+      var leafRect = leaf.getBoundingClientRect();
+      var landingLeft = leafRect.left;
+      var maxLeft = leavesLayer.clientWidth - 8;
       var restingAngle = -85 + Math.floor(Math.random() * 171);
 
+      if (landingLeft < -12) {
+        landingLeft = -12;
+      } else if (landingLeft > maxLeft) {
+        landingLeft = maxLeft;
+      }
+
       leaf.leafState = 'settled';
-      activeFallingLeaves--;
+      activeMovingLeaves--;
       leaf.className =
         'leaf settled-leaf ' + leaf.leafColorClass + ' ' + leaf.leafShapeClass;
       leaf.style.top = 'auto';
@@ -800,102 +991,143 @@
       }
     }
 
-    function createLeaf(startInsideScreen) {
-      if (!leavesLayer || activeFallingLeaves >= maxFallingLeaves) {
+    function createFallingLeaf(startInsideScreen, forcedLeft, forcedPath, startDelay) {
+      if (!leavesLayer || activeMovingLeaves >= maxMovingLeaves) {
         return;
       }
 
-      var leaf = document.createElement('span');
-      var surface = document.createElement('span');
-      var vein = document.createElement('span');
-      var stem = document.createElement('span');
-      var duration = 8000 + Math.floor(Math.random() * 5500);
       var size = 12 + Math.floor(Math.random() * 12);
-      var delay = startInsideScreen ? -Math.floor(Math.random() * duration) : 0;
-      var colorClass = leafColors[Math.floor(Math.random() * leafColors.length)];
-      var shapeClass = leafShapes[Math.floor(Math.random() * leafShapes.length)];
-      var driftClass = leafDrifts[Math.floor(Math.random() * leafDrifts.length)];
+      var leaf = buildLeafElement(size);
+      var pathClass = forcedPath ||
+        leafPaths[Math.floor(Math.random() * leafPaths.length)];
+      var duration = getPathDuration(pathClass);
+      var delay = startInsideScreen ?
+        -Math.floor(Math.random() * duration) :
+        (startDelay || 0);
 
       leaf.leafState = 'falling';
-      leaf.leafColorClass = colorClass;
-      leaf.leafShapeClass = shapeClass;
       leaf.className =
-        'leaf falling-leaf ' + colorClass + ' ' + shapeClass + ' ' + driftClass;
-
-      surface.className = 'leaf-surface';
-      vein.className = 'leaf-vein';
-      stem.className = 'leaf-stem';
-      surface.appendChild(vein);
-      leaf.appendChild(surface);
-      leaf.appendChild(stem);
-
-      leaf.style.left = Math.floor(Math.random() * 96) + '%';
-      leaf.style.width = size + 'px';
-      leaf.style.height = Math.round(size * 1.12) + 'px';
-      leaf.style.opacity = (0.62 + Math.random() * 0.32).toFixed(2);
+        'leaf falling-leaf ' + leaf.leafColorClass + ' ' +
+        leaf.leafShapeClass + ' ' + pathClass;
+      leaf.style.left = forcedLeft ||
+        (Math.floor(Math.random() * 96) + '%');
       leaf.style.animationDuration = duration + 'ms';
       leaf.style.WebkitAnimationDuration = duration + 'ms';
       leaf.style.animationDelay = delay + 'ms';
       leaf.style.WebkitAnimationDelay = delay + 'ms';
 
       leavesLayer.appendChild(leaf);
-      activeFallingLeaves++;
+      activeMovingLeaves++;
 
       setTimeout(function() {
         settleLeaf(leaf);
       }, Math.max(350, duration + delay));
     }
 
-    function blowLeavesToLeft() {
-      if (windInProgress || settledLeaves.length === 0) {
+    function createLeafCluster() {
+      if (activeMovingLeaves > maxMovingLeaves - 7) {
         return;
       }
 
-      var leavesToBlow = settledLeaves.slice(0);
-      settledLeaves = [];
-      windInProgress = true;
+      var center = 12 + Math.floor(Math.random() * 76);
+      var count = 5 + Math.floor(Math.random() * 3);
+      var pathClass = Math.random() < 0.5 ?
+        'leaf-path-spiral-left' :
+        'leaf-path-spiral-right';
 
-      for (var i = 0; i < leavesToBlow.length; i++) {
-        (function(leaf, index) {
-          var startDelay = Math.floor(Math.random() * 700) + index * 9;
-          var windDuration = 2200 + Math.floor(Math.random() * 1200);
-
+      for (var i = 0; i < count; i++) {
+        (function(index) {
           setTimeout(function() {
-            if (!leaf || !leaf.parentNode) {
-              return;
-            }
+            var offset = -3 + Math.floor(Math.random() * 7);
+            createFallingLeaf(
+              false,
+              (center + offset) + '%',
+              pathClass,
+              0
+            );
+          }, index * 115);
+        })(i);
+      }
+    }
 
-            leaf.leafState = 'wind';
-            leaf.className =
-              'leaf wind-leaf ' + leaf.leafColorClass + ' ' + leaf.leafShapeClass;
-            leaf.style.animationDuration = windDuration + 'ms';
-            leaf.style.WebkitAnimationDuration = windDuration + 'ms';
-            leaf.style.animationDelay = '0ms';
-            leaf.style.WebkitAnimationDelay = '0ms';
-
-            setTimeout(function() {
-              removeLeafElement(leaf);
-            }, windDuration + 250);
-          }, startDelay);
-        })(leavesToBlow[i], i);
+    function removeStreamLeaf(leaf) {
+      if (!leaf || leaf.leafState !== 'stream') {
+        return;
       }
 
+      leaf.leafState = 'removed';
+      activeMovingLeaves--;
+      removeLeafElement(leaf);
+    }
+
+    function createStreamLeaf(index) {
+      if (!leavesLayer || activeMovingLeaves >= maxMovingLeaves) {
+        return;
+      }
+
+      var size = 11 + Math.floor(Math.random() * 13);
+      var leaf = buildLeafElement(size);
+      var streamClass = index % 2 === 0 ?
+        'leaf-stream-up' :
+        'leaf-stream-down';
+      var duration = 4800 + Math.floor(Math.random() * 2600);
+
+      leaf.leafState = 'stream';
+      leaf.className =
+        'leaf stream-leaf ' + leaf.leafColorClass + ' ' +
+        leaf.leafShapeClass + ' ' + streamClass;
+      leaf.style.top = (8 + Math.floor(Math.random() * 70)) + '%';
+      leaf.style.animationDuration = duration + 'ms';
+      leaf.style.WebkitAnimationDuration = duration + 'ms';
+
+      leavesLayer.appendChild(leaf);
+      activeMovingLeaves++;
+
       setTimeout(function() {
-        windInProgress = false;
-      }, 5000);
+        removeStreamLeaf(leaf);
+      }, duration + 250);
+    }
+
+    function createLeafStream() {
+      var count = 10 + Math.floor(Math.random() * 5);
+
+      for (var i = 0; i < count; i++) {
+        (function(index) {
+          setTimeout(function() {
+            createStreamLeaf(index);
+          }, index * 150 + Math.floor(Math.random() * 180));
+        })(i);
+      }
+    }
+
+    function scheduleLeafCluster() {
+      var delay = 13000 + Math.floor(Math.random() * 10000);
+
+      setTimeout(function() {
+        createLeafCluster();
+        scheduleLeafCluster();
+      }, delay);
+    }
+
+    function scheduleLeafStream() {
+      var delay = 32000 + Math.floor(Math.random() * 23000);
+
+      setTimeout(function() {
+        createLeafStream();
+        scheduleLeafStream();
+      }, delay);
     }
 
     for (var leafIndex = 0; leafIndex < 14; leafIndex++) {
-      createLeaf(true);
+      createFallingLeaf(true, null, null, 0);
     }
 
     setInterval(function() {
-      createLeaf(false);
-    }, 450);
+      createFallingLeaf(false, null, null, 0);
+    }, 520);
 
-    setInterval(function() {
-      blowLeavesToLeft();
-    }, 60000);
+    scheduleLeafCluster();
+    scheduleLeafStream();
   </script>
 
 </body>
