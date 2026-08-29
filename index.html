@@ -497,7 +497,24 @@
     </a>
     <a class="app-icon"
       href="javascript:;"
-      onc    /* ── Календарь ── */
+      onclick="external.doShellExec('C:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
+      <span>КОМПАС-3D (1)</span>
+    </a>
+    <a class="app-icon"
+      href="javascript:;"
+      onclick="external.doShellExec('D:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
+      <span>КОМПАС-3D (2)</span>
+    </a>
+  </div>
+
+  <script>
+    /* ── Календарь ── */
     var calendarNow = new Date();
     var calendarMonth = calendarNow.getMonth();
     var calendarYear = calendarNow.getFullYear();
@@ -574,40 +591,6 @@
       }
 
       setBackgroundForMonth(month);
-    }
-    buildCalendar();onth = new Date(year, month + 1, 0).getDate();
-
-      var grid = document.getElementById('cal-days');
-      grid.innerHTML = '';
-
-      var col = 1;
-      var row = 1;
-
-      for (var i = 0; i < offset; i++) {
-        var empty = document.createElement('span');
-        empty.style.msGridColumn = col;
-        empty.style.msGridRow    = row;
-        col++;
-        if (col > 7) { col = 1; row++; }
-        grid.appendChild(empty);
-      }
-
-      for (var d = 1; d <= daysInMonth; d++) {
-        var dow     = (offset + d - 1) % 7;
-        var isToday = (d === today);
-        var isSun   = (dow === 6);
-
-        var el = document.createElement('span');
-        el.className = 'cal-day' +
-          (isToday ? ' today' : '') +
-          (isSun && !isToday ? ' sunday' : '');
-        el.textContent = d;
-        el.style.msGridColumn = col;
-        el.style.msGridRow    = row;
-        col++;
-        if (col > 7) { col = 1; row++; }
-        grid.appendChild(el);
-      }
     }
     buildCalendar();
 
