@@ -644,12 +644,193 @@
       83%  { margin-left: -98vw;  margin-top: -12px; transform: rotate(-920deg) scaleY(0.84); }
       100% { margin-left: -126vw; margin-top: 32px;  transform: rotate(-1160deg) scaleY(0.42); }
     }
+
+
+    /* ── Атмосфера, глубина и плавные переходы ── */
+    #bg-transition {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      -webkit-transition: opacity 900ms ease-in-out;
+      transition: opacity 900ms ease-in-out;
+    }
+
+    #scene-grade {
+      position: fixed;
+      top: 30px; left: 0; right: 0; bottom: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.72;
+      background:
+        radial-gradient(circle at 70% 16%, rgba(255, 236, 183, 0.14) 0%, rgba(255, 213, 140, 0.04) 25%, rgba(0, 0, 0, 0) 49%),
+        radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 48%, rgba(19, 16, 28, 0.14) 100%);
+      -webkit-transition: opacity 1200ms ease, background 1200ms ease;
+      transition: opacity 1200ms ease, background 1200ms ease;
+    }
+
+    #atmosphere-canvas {
+      position: fixed;
+      top: 30px;
+      left: 0;
+      z-index: 4;
+      width: 100%;
+      height: calc(100% - 30px);
+      pointer-events: none;
+    }
+
+    .widget {
+      overflow: hidden;
+      -webkit-transition:
+        -webkit-transform 240ms ease,
+        border-color 240ms ease,
+        box-shadow 240ms ease,
+        background 240ms ease;
+      transition:
+        transform 240ms ease,
+        border-color 240ms ease,
+        box-shadow 240ms ease,
+        background 240ms ease;
+      -webkit-animation: widget-arrive 620ms ease-out both;
+      animation: widget-arrive 620ms ease-out both;
+    }
+
+    .widget:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48%;
+      border-radius: 18px 18px 50% 50%;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.11),
+        rgba(255, 255, 255, 0)
+      );
+    }
+
+    .widget:hover {
+      border-color: rgba(255, 255, 255, 0.38);
+      background: rgba(30, 30, 50, 0.69);
+      box-shadow:
+        0 13px 52px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+      -webkit-transform: translateY(-2px);
+      transform: translateY(-2px);
+    }
+
+    #cal-widget { -webkit-animation-delay: 40ms; animation-delay: 40ms; }
+    #qr-widget { -webkit-animation-delay: 120ms; animation-delay: 120ms; }
+    #app-panel { -webkit-animation-delay: 80ms; animation-delay: 80ms; }
+    #app-panel-2 { -webkit-animation-delay: 160ms; animation-delay: 160ms; }
+
+    #clock {
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .cal-arrow {
+      -webkit-transition:
+        color 180ms ease,
+        background 180ms ease,
+        -webkit-transform 180ms ease;
+      transition:
+        color 180ms ease,
+        background 180ms ease,
+        transform 180ms ease;
+    }
+
+    .cal-arrow:hover {
+      -webkit-transform: scale(1.12);
+      transform: scale(1.12);
+    }
+
+    .cal-arrow:active {
+      -webkit-transform: scale(0.88);
+      transform: scale(0.88);
+    }
+
+    .calendar-enter {
+      -webkit-animation: calendar-enter 280ms ease-out both;
+      animation: calendar-enter 280ms ease-out both;
+    }
+
+    .app-icon img {
+      border-radius: 13px;
+      -webkit-transition:
+        -webkit-transform 170ms ease,
+        box-shadow 170ms ease;
+      transition:
+        transform 170ms ease,
+        box-shadow 170ms ease;
+    }
+
+    .app-icon:hover img {
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.32);
+    }
+
+    @-webkit-keyframes widget-arrive {
+      0% {
+        opacity: 0;
+        -webkit-transform: translateY(12px) scale(0.975);
+      }
+      100% {
+        opacity: 1;
+        -webkit-transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes widget-arrive {
+      0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.975);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @-webkit-keyframes calendar-enter {
+      0% {
+        opacity: 0.18;
+        -webkit-transform: translateY(5px);
+      }
+      100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+      }
+    }
+
+    @keyframes calendar-enter {
+      0% {
+        opacity: 0.18;
+        transform: translateY(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
   </style>
 </head>
 <body>
 
   <!-- Фон -->
   <div id="bg"></div>
+
+  <!-- Плавная смена обоев и атмосферный Canvas-слой -->
+  <div id="bg-transition"></div>
+  <div id="scene-grade"></div>
+  <canvas id="atmosphere-canvas"></canvas>
+
 
   <!-- Декоративный слой с падающими листьями -->
   <div id="leaves-layer"></div>
@@ -781,9 +962,36 @@
     var calendarMonth = calendarNow.getMonth();
     var calendarYear = calendarNow.getFullYear();
 
+    var backgroundInitialized = false;
+    var backgroundTransitionTimer = null;
+
     function setBackgroundForMonth(month) {
-      document.getElementById('bg').style.backgroundImage =
-        "url('./background" + (month + 1) + ".jpg')";
+      var bg = document.getElementById('bg');
+      var nextBg = document.getElementById('bg-transition');
+      var image = "url('./background" + (month + 1) + ".jpg')";
+
+      if (!backgroundInitialized || !nextBg) {
+        bg.style.backgroundImage = image;
+        backgroundInitialized = true;
+      } else {
+        if (backgroundTransitionTimer) {
+          clearTimeout(backgroundTransitionTimer);
+        }
+
+        nextBg.style.backgroundImage = image;
+        nextBg.style.opacity = '0';
+        nextBg.offsetWidth;
+        nextBg.style.opacity = '1';
+
+        backgroundTransitionTimer = setTimeout(function() {
+          bg.style.backgroundImage = image;
+          nextBg.style.opacity = '0';
+        }, 900);
+      }
+
+      if (typeof setAtmosphereMonth === 'function') {
+        setAtmosphereMonth(month);
+      }
     }
 
     function changeCalendarMonth(direction) {
@@ -851,6 +1059,10 @@
         if (col > 7) { col = 1; row++; }
         grid.appendChild(el);
       }
+
+      grid.className = '';
+      grid.offsetWidth;
+      grid.className = 'calendar-enter';
 
       setBackgroundForMonth(month);
     }
@@ -1128,6 +1340,354 @@
 
     scheduleLeafCluster();
     scheduleLeafStream();
+
+
+    /* ── Canvas 2D: световая пыль, мягкий параллакс и отклик на клик ── */
+    var atmosphereState = null;
+
+    function atmospherePaletteForMonth(month) {
+      if (month === 11 || month === 0 || month === 1) {
+        return [[218, 239, 255], [186, 218, 255], [241, 247, 255]];
+      }
+      if (month >= 2 && month <= 4) {
+        return [[246, 255, 206], [255, 228, 178], [214, 255, 222]];
+      }
+      if (month >= 5 && month <= 7) {
+        return [[255, 238, 167], [219, 255, 205], [255, 250, 218]];
+      }
+      return [[255, 203, 112], [230, 141, 67], [255, 231, 164]];
+    }
+
+    function makeAtmosphereSprite(rgb) {
+      var sprite = document.createElement('canvas');
+      var size = 64;
+      var spriteContext = sprite.getContext('2d');
+      var glow;
+
+      sprite.width = size;
+      sprite.height = size;
+      glow = spriteContext.createRadialGradient(32, 32, 0, 32, 32, 31);
+      glow.addColorStop(
+        0,
+        'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.82)'
+      );
+      glow.addColorStop(
+        0.20,
+        'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.34)'
+      );
+      glow.addColorStop(
+        1,
+        'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0)'
+      );
+      spriteContext.fillStyle = glow;
+      spriteContext.fillRect(0, 0, size, size);
+
+      return sprite;
+    }
+
+    function setAtmosphereMonth(month) {
+      var palette;
+      var i;
+
+      if (!atmosphereState) {
+        return;
+      }
+
+      palette = atmospherePaletteForMonth(month);
+      atmosphereState.sprites = [];
+
+      for (i = 0; i < palette.length; i++) {
+        atmosphereState.sprites.push(makeAtmosphereSprite(palette[i]));
+      }
+    }
+
+    function applyTimeGrade() {
+      var grade = document.getElementById('scene-grade');
+      var hour = new Date().getHours();
+
+      if (!grade) {
+        return;
+      }
+
+      if (hour < 6 || hour >= 22) {
+        grade.style.opacity = '0.92';
+        grade.style.background =
+          'radial-gradient(circle at 68% 16%, rgba(122,156,214,0.10) 0%, rgba(30,45,86,0.06) 34%, rgba(0,0,0,0) 58%),' +
+          'radial-gradient(ellipse at center, rgba(10,18,38,0.08) 38%, rgba(6,9,24,0.38) 100%)';
+      } else if (hour < 10 || hour >= 18) {
+        grade.style.opacity = '0.82';
+        grade.style.background =
+          'radial-gradient(circle at 70% 17%, rgba(255,210,132,0.20) 0%, rgba(245,151,78,0.07) 30%, rgba(0,0,0,0) 55%),' +
+          'radial-gradient(ellipse at center, rgba(255,255,255,0) 45%, rgba(35,20,31,0.22) 100%)';
+      } else {
+        grade.style.opacity = '0.64';
+        grade.style.background =
+          'radial-gradient(circle at 70% 16%, rgba(255,245,202,0.15) 0%, rgba(255,224,164,0.04) 27%, rgba(0,0,0,0) 52%),' +
+          'radial-gradient(ellipse at center, rgba(255,255,255,0) 52%, rgba(17,18,30,0.13) 100%)';
+      }
+    }
+
+    function initAtmosphere() {
+      var canvas = document.getElementById('atmosphere-canvas');
+      var context;
+      var requestFrame;
+      var particleCount = 32;
+      var i;
+
+      if (!canvas || !canvas.getContext) {
+        return;
+      }
+
+      context = canvas.getContext('2d');
+      if (!context) {
+        return;
+      }
+
+      requestFrame =
+        window.requestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        function(callback) {
+          return setTimeout(function() {
+            callback(new Date().getTime());
+          }, 16);
+        };
+
+      atmosphereState = {
+        canvas: canvas,
+        context: context,
+        sprites: [],
+        particles: [],
+        ripples: [],
+        pointerX: 0,
+        pointerY: 0,
+        pointerVisible: false,
+        width: 1,
+        height: 1,
+        lastTime: 0
+      };
+
+      function resizeAtmosphere() {
+        var width = document.documentElement.clientWidth || window.innerWidth;
+        var height =
+          (document.documentElement.clientHeight || window.innerHeight) - 30;
+
+        if (height < 1) {
+          height = 1;
+        }
+
+        atmosphereState.width = width;
+        atmosphereState.height = height;
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      function resetParticle(particle, anywhere) {
+        particle.x = Math.random() * atmosphereState.width;
+        particle.y = anywhere ?
+          Math.random() * atmosphereState.height :
+          atmosphereState.height + 20;
+        particle.radius = 5 + Math.random() * 13;
+        particle.speedX = -0.035 + Math.random() * 0.07;
+        particle.speedY = -0.018 - Math.random() * 0.045;
+        particle.wave = 0.25 + Math.random() * 0.75;
+        particle.phase = Math.random() * 6.283;
+        particle.alpha = 0.08 + Math.random() * 0.18;
+        particle.spriteIndex = Math.floor(Math.random() * 3);
+      }
+
+      function addRipple(x, y) {
+        if (atmosphereState.ripples.length > 5) {
+          atmosphereState.ripples.shift();
+        }
+
+        atmosphereState.ripples.push({
+          x: x,
+          y: y - 30,
+          radius: 4,
+          alpha: 0.34
+        });
+      }
+
+      function pointerMove(event) {
+        atmosphereState.pointerX = event.clientX;
+        atmosphereState.pointerY = event.clientY - 30;
+        atmosphereState.pointerVisible = true;
+      }
+
+      function pointerLeave() {
+        atmosphereState.pointerVisible = false;
+      }
+
+      function pointerDown(event) {
+        var target = event.target || event.srcElement;
+        var node = target;
+
+        while (node && node !== document.body) {
+          if (
+            node.tagName === 'A' ||
+            node.tagName === 'BUTTON' ||
+            node.id === 'qr-widget'
+          ) {
+            return;
+          }
+          node = node.parentNode;
+        }
+
+        addRipple(event.clientX, event.clientY);
+      }
+
+      function drawAtmosphere(timestamp) {
+        var state = atmosphereState;
+        var now = timestamp || new Date().getTime();
+        var delta = state.lastTime ? now - state.lastTime : 16;
+        var pointerOffsetX = 0;
+        var pointerOffsetY = 0;
+        var glow;
+        var particle;
+        var sprite;
+        var size;
+        var pulse;
+        var ripple;
+        var r;
+
+        if (delta > 50) {
+          delta = 50;
+        }
+        state.lastTime = now;
+
+        context.clearRect(0, 0, state.width, state.height);
+
+        if (state.pointerVisible) {
+          pointerOffsetX =
+            (state.pointerX - state.width / 2) / state.width * 7;
+          pointerOffsetY =
+            (state.pointerY - state.height / 2) / state.height * 5;
+
+          glow = context.createRadialGradient(
+            state.pointerX,
+            state.pointerY,
+            0,
+            state.pointerX,
+            state.pointerY,
+            125
+          );
+          glow.addColorStop(0, 'rgba(255,235,188,0.070)');
+          glow.addColorStop(1, 'rgba(255,235,188,0)');
+          context.fillStyle = glow;
+          context.fillRect(
+            state.pointerX - 125,
+            state.pointerY - 125,
+            250,
+            250
+          );
+        }
+
+        for (i = 0; i < state.particles.length; i++) {
+          particle = state.particles[i];
+          particle.x += particle.speedX * delta;
+          particle.y += particle.speedY * delta;
+
+          if (
+            particle.y < -35 ||
+            particle.x < -45 ||
+            particle.x > state.width + 45
+          ) {
+            resetParticle(particle, false);
+          }
+
+          pulse =
+            0.72 +
+            Math.sin(now * 0.0007 * particle.wave + particle.phase) * 0.28;
+          size = particle.radius * 2;
+          sprite = state.sprites[particle.spriteIndex];
+
+          if (sprite) {
+            context.globalAlpha = particle.alpha * pulse;
+            context.drawImage(
+              sprite,
+              particle.x - particle.radius + pointerOffsetX,
+              particle.y - particle.radius + pointerOffsetY,
+              size,
+              size
+            );
+          }
+        }
+
+        context.globalAlpha = 1;
+
+        for (r = state.ripples.length - 1; r >= 0; r--) {
+          ripple = state.ripples[r];
+          ripple.radius += delta * 0.09;
+          ripple.alpha -= delta * 0.00045;
+
+          if (ripple.alpha <= 0) {
+            state.ripples.splice(r, 1);
+          } else {
+            context.beginPath();
+            context.arc(
+              ripple.x,
+              ripple.y,
+              ripple.radius,
+              0,
+              Math.PI * 2,
+              false
+            );
+            context.strokeStyle =
+              'rgba(255,239,204,' + ripple.alpha.toFixed(3) + ')';
+            context.lineWidth = 1.4;
+            context.stroke();
+
+            context.beginPath();
+            context.arc(
+              ripple.x,
+              ripple.y,
+              ripple.radius * 0.64,
+              0,
+              Math.PI * 2,
+              false
+            );
+            context.strokeStyle =
+              'rgba(255,255,255,' + (ripple.alpha * 0.45).toFixed(3) + ')';
+            context.lineWidth = 1;
+            context.stroke();
+          }
+        }
+
+        requestFrame(drawAtmosphere);
+      }
+
+      resizeAtmosphere();
+      setAtmosphereMonth(calendarMonth);
+
+      for (i = 0; i < particleCount; i++) {
+        var particleItem = {};
+        resetParticle(particleItem, true);
+        atmosphereState.particles.push(particleItem);
+      }
+
+      if (window.addEventListener) {
+        window.addEventListener('resize', resizeAtmosphere, false);
+        document.addEventListener(
+          window.PointerEvent ? 'pointermove' : 'mousemove',
+          pointerMove,
+          false
+        );
+        document.addEventListener(
+          window.PointerEvent ? 'pointerdown' : 'mousedown',
+          pointerDown,
+          false
+        );
+        document.addEventListener('mouseleave', pointerLeave, false);
+      }
+
+      requestFrame(drawAtmosphere);
+    }
+
+    applyTimeGrade();
+    setInterval(applyTimeGrade, 60000);
+    initAtmosphere();
+
   </script>
 
 </body>
