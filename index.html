@@ -561,7 +561,7 @@
     var leafColors = ['leaf-gold', 'leaf-orange', 'leaf-red', 'leaf-brown'];
     var leafDrifts = ['leaf-drift-left', 'leaf-drift-right'];
     var activeLeaves = 0;
-    var maxLeaves = 18;
+    var maxLeaves = 32;
 
     function removeLeaf(leaf) {
       if (leaf && leaf.parentNode) {
@@ -600,13 +600,13 @@
       }, duration + delay + 800);
     }
 
-    for (var leafIndex = 0; leafIndex < 8; leafIndex++) {
+    for (var leafIndex = 0; leafIndex < 14; leafIndex++) {
       createLeaf(true);
     }
 
     setInterval(function() {
       createLeaf(false);
-    }, 850);
+    }, 450);
   </script>
 
 </body>
