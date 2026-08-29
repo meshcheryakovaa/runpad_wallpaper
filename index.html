@@ -26,7 +26,7 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: 0;
-      background-image: url('./background1.jpg');
+      background-image: url('./background9.jpg');
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -101,7 +101,38 @@
       padding: 0 2px;
     }
 
+
+    #cal-nav {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    .cal-arrow {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      outline: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.72);
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      line-height: 22px;
+      text-align: center;
+    }
+
+    .cal-arrow:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
     #cal-month {
+      min-width: 86px;
+      text-align: center;
       font-size: 15px;
       font-weight: 600;
       color: rgba(255, 255, 255, 0.95);
@@ -388,7 +419,11 @@
   <!-- Виджет календаря -->
   <div id="cal-widget" class="widget">
     <div id="cal-header">
-      <span id="cal-month"></span>
+      <div id="cal-nav">
+        <button id="cal-prev" class="cal-arrow" type="button" onclick="changeCalendarMonth(-1)" title="Предыдущий месяц" aria-label="Предыдущий месяц">&#9664;</button>
+        <span id="cal-month"></span>
+        <button id="cal-next" class="cal-arrow" type="button" onclick="changeCalendarMonth(1)" title="Следующий месяц" aria-label="Следующий месяц">&#9654;</button>
+      </div>
       <span id="cal-year"></span>
     </div>
     <div id="cal-dow">
@@ -462,29 +497,35 @@
     </a>
     <a class="app-icon"
       href="javascript:;"
-      onclick="external.doShellExec('C:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
-      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
-      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
-      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
-      <span>КОМПАС-3D (1)</span>
-    </a>
-    <a class="app-icon"
-      href="javascript:;"
-      onclick="external.doShellExec('D:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
-      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
-      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
-      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
-      <span>КОМПАС-3D (2)</span>
-    </a>
-  </div>
+      onc    /* ── Календарь ── */
+    var calendarNow = new Date();
+    var calendarMonth = calendarNow.getMonth();
+    var calendarYear = calendarNow.getFullYear();
 
-  <script>
-    /* ── Календарь ── */
+    function setBackgroundForMonth(month) {
+      document.getElementById('bg').style.backgroundImage =
+        "url('./background" + (month + 1) + ".jpg')";
+    }
+
+    function changeCalendarMonth(direction) {
+      calendarMonth += direction;
+
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      } else if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+
+      buildCalendar();
+    }
+
     function buildCalendar() {
       var now   = new Date();
       var today = now.getDate();
-      var month = now.getMonth();
-      var year  = now.getFullYear();
+      var month = calendarMonth;
+      var year  = calendarYear;
 
       var monthNames = [
         'Январь','Февраль','Март','Апрель','Май','Июнь',
@@ -496,6 +537,45 @@
       var firstDay    = new Date(year, month, 1).getDay();
       var offset      = (firstDay === 0) ? 6 : firstDay - 1;
       var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      var grid = document.getElementById('cal-days');
+      grid.innerHTML = '';
+
+      var col = 1;
+      var row = 1;
+
+      for (var i = 0; i < offset; i++) {
+        var empty = document.createElement('span');
+        empty.style.msGridColumn = col;
+        empty.style.msGridRow    = row;
+        col++;
+        if (col > 7) { col = 1; row++; }
+        grid.appendChild(empty);
+      }
+
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dow = (offset + d - 1) % 7;
+        var isToday =
+          d === today &&
+          month === now.getMonth() &&
+          year === now.getFullYear();
+        var isSun = (dow === 6);
+
+        var el = document.createElement('span');
+        el.className = 'cal-day' +
+          (isToday ? ' today' : '') +
+          (isSun && !isToday ? ' sunday' : '');
+        el.textContent = d;
+        el.style.msGridColumn = col;
+        el.style.msGridRow    = row;
+        col++;
+        if (col > 7) { col = 1; row++; }
+        grid.appendChild(el);
+      }
+
+      setBackgroundForMonth(month);
+    }
+    buildCalendar();onth = new Date(year, month + 1, 0).getDate();
 
       var grid = document.getElementById('cal-days');
       grid.innerHTML = '';
