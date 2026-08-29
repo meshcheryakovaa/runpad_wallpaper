@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Рабочий стол</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* ── Фон ── */
+    #bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+      background-image: url('./background1.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: #1a1a2e;
+    }
+
+    /* ── Менюбар ── */
+    #menubar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 30px;
+      z-index: 100;
+      background: rgba(220, 220, 220, 0.80);
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: 0 14px;
+    }
+
+    #clock {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      font-size: 13px;
+      color: #111;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    #menubar-icons {
+      margin-left: auto;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+    #menubar-icons svg {
+      margin-left: 14px;
+      opacity: 0.8;
+    }
+
+    /* ── Базовый стиль виджетов ── */
+    .widget {
+      position: fixed;
+      z-index: 10;
+      background: rgba(30, 30, 50, 0.62);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    /* ── Календарь ── */
+    #cal-widget {
+      top: 46px;
+      left: 20px;
+      width: 230px;
+      padding: 16px 14px 12px;
+    }
+
+    #cal-header {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -ms-flex-align: end;
+      align-items: flex-end;
+      margin-bottom: 10px;
+      padding: 0 2px;
+    }
+
+    #cal-month {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+      letter-spacing: 0.2px;
+    }
+    #cal-year {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    #cal-dow {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: distribute;
+      justify-content: space-around;
+      margin-bottom: 4px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+    }
+    #cal-dow span {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      padding-bottom: 4px;
+    }
+    #cal-dow span:nth-child(6) { color: rgba(255, 255, 255, 0.5); }
+    #cal-dow span:nth-child(7) { color: rgba(255, 100, 100, 0.65); }
+
+    #cal-days {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .cal-day {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin: 1px auto;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .cal-day.today {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.30);
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .cal-day.sunday { color: rgba(255, 100, 100, 0.8); }
+
+    /* ── QR виджет ── */
+    #qr-widget {
+      top: 310px;
+      left: 20px;
+      width: 230px;
+      padding: 14px;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    #qr-widget img {
+      width: 150px;
+      height: 150px;
+      border-radius: 8px;
+    }
+
+    #qr-caption {
+      margin-top: 10px;
+      text-align: center;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    #qr-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    #qr-email {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 3px;
+    }
+
+    /* ── Панель приложений ── */
+    #app-panel {
+      top: 46px;
+      right: 20px;
+      width: 96px;
+      padding: 12px 10px;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    #app-panel-2 {
+      top: 400px; /* подбери под высоту первой панели */
+      right: 20px;
+      padding: 12px 10px;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    .app-icon {
+      pointer-events: auto;
+      cursor: pointer;
+      text-decoration: none;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-align: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .app-icon:last-child { margin-bottom: 0; }
+
+    .app-icon img {
+      width: 56px;
+      height: 56px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+      -webkit-transition: -webkit-transform 0.12s;
+      transition: transform 0.12s;
+    }
+
+    .app-icon span {
+      font-size: 10px;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      margin-top: 4px;
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- Фон -->
+  <div id="bg"></div>
+
+  <!-- Менюбар -->
+  <div id="menubar">
+    <span id="clock"></span>
+    <div id="menubar-icons">
+      <!-- WiFi -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#222">
+        <path d="M12 6c3.537 0 6.837 1.353 9.293 3.809l1.414-1.414C19.874 5.561 16.071 4 12 4 7.929 4.001 4.126 5.561 1.293 8.395l1.414 1.414C5.163 7.353 8.463 6 12 6z"/>
+        <path d="M17.671 14.307c-3.074-3.074-8.268-3.074-11.342 0l1.414 1.414c2.307-2.307 6.207-2.307 8.514 0L17.671 14.307z"/>
+        <path d="M20.437 11.293c-4.572-4.574-12.301-4.574-16.873 0l1.414 1.414c3.807-3.807 10.238-3.807 14.045 0L20.437 11.293z"/>
+        <circle cx="12" cy="18" r="2"/>
+      </svg>
+      <!-- Поиск -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#222">
+        <path d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z"/>
+      </svg>
+      <!-- Батарея -->
+      <svg width="26" height="14" viewBox="0 0 26 14" fill="none">
+        <rect x="0.5" y="0.5" width="22" height="13" rx="3.5" stroke="#222" stroke-width="1.2"/>
+        <rect x="2" y="2" width="16" height="10" rx="2" fill="#222"/>
+        <rect x="23" y="4" width="2.5" height="6" rx="1.2" fill="#222"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Виджет календаря -->
+  <div id="cal-widget" class="widget">
+    <div id="cal-header">
+      <span id="cal-month"></span>
+      <span id="cal-year"></span>
+    </div>
+    <div id="cal-dow">
+      <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+    </div>
+    <div id="cal-days"></div>
+  </div>
+
+  <!-- Виджет QR-кода -->
+  <div id="qr-widget" class="widget" onclick="external.doShellExec('https://www.notion.so/meshcheryakov-a-a/Notion-8fe9859303d348d5acf5a5d009774ad9')" style="cursor:pointer;">
+    <img src="./notion.gif" alt="QR" />
+    <div id="qr-caption">
+      <span id="qr-title">Notion / Биржа знаний</span>
+      <span id="qr-email">meshcheryakov.a.a@outlook.com</span>
+    </div>
+  </div>
+
+  <!-- Панель приложений -->
+  <div id="app-panel" class="widget">
+    <a class="app-icon"
+       href="javascript:;"
+       onclick="external.doShellExec('C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE')"
+       onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+       onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/word.png" alt="Word" />
+      <span>Word</span>
+    </a>
+    <a class="app-icon"
+       href="javascript:;"
+       onclick="external.doShellExec('C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE')"
+       onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+       onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/excel.png" alt="Excel" />
+      <span>Excel</span>
+    </a>
+    <a class="app-icon"
+       href="javascript:;"
+       onclick="external.doShellExec('C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE')"
+       onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+       onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/powerpoint.png" alt="PowerPoint" />
+      <span>PowerPoint</span>
+    </a>
+    <a class="app-icon"
+       href="javascript:;"
+       onclick="external.doShellExec('%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe')"
+       onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+       onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/edge.png" alt="Edge" />
+      <span>Edge</span>
+    </a>
+  </div>
+
+    <!-- Панель приложений 2 -->
+  <div id="app-panel-2" class="widget">
+    <a class="app-icon"
+      href="javascript:;"
+      onclick="external.doShellExec('https://chat.deepseek.com')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/deepseek.png" alt="DeepSeek" />
+      <span>DeepSeek</span>
+    </a>
+    <a class="app-icon"
+      href="javascript:;"
+      onclick="external.doShellExec('https://education.yandex.ru/kids')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/yandex_uchebnik.png" alt="Яндекс Учебник" />
+      <span>Яндекс Учебник</span>
+    </a>
+    <a class="app-icon"
+      href="javascript:;"
+      onclick="external.doShellExec('C:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
+      <span>КОМПАС-3D (1)</span>
+    </a>
+    <a class="app-icon"
+      href="javascript:;"
+      onclick="external.doShellExec('D:\\Program Files\\ASCON\\KOMPAS-3D v19\\Bin\\KOMPAS.Exe')"
+      onmouseover="this.querySelector('img').style.transform='scale(1.12)'; this.querySelector('img').style.WebkitTransform='scale(1.12)';"
+      onmouseout="this.querySelector('img').style.transform='scale(1)'; this.querySelector('img').style.WebkitTransform='scale(1)';">
+      <img src="./icon/kompas.png" alt="КОМПАС-3D" />
+      <span>КОМПАС-3D (2)</span>
+    </a>
+  </div>
+
+  <script>
+    /* ── Календарь ── */
+    function buildCalendar() {
+      var now   = new Date();
+      var today = now.getDate();
+      var month = now.getMonth();
+      var year  = now.getFullYear();
+
+      var monthNames = [
+        'Январь','Февраль','Март','Апрель','Май','Июнь',
+        'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+      ];
+      document.getElementById('cal-month').textContent = monthNames[month];
+      document.getElementById('cal-year').textContent  = year;
+
+      var firstDay    = new Date(year, month, 1).getDay();
+      var offset      = (firstDay === 0) ? 6 : firstDay - 1;
+      var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      var grid = document.getElementById('cal-days');
+      grid.innerHTML = '';
+
+      var col = 1;
+      var row = 1;
+
+      for (var i = 0; i < offset; i++) {
+        var empty = document.createElement('span');
+        empty.style.msGridColumn = col;
+        empty.style.msGridRow    = row;
+        col++;
+        if (col > 7) { col = 1; row++; }
+        grid.appendChild(empty);
+      }
+
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dow     = (offset + d - 1) % 7;
+        var isToday = (d === today);
+        var isSun   = (dow === 6);
+
+        var el = document.createElement('span');
+        el.className = 'cal-day' +
+          (isToday ? ' today' : '') +
+          (isSun && !isToday ? ' sunday' : '');
+        el.textContent = d;
+        el.style.msGridColumn = col;
+        el.style.msGridRow    = row;
+        col++;
+        if (col > 7) { col = 1; row++; }
+        grid.appendChild(el);
+      }
+    }
+    buildCalendar();
+
+    /* ── Часы ── */
+    var weekdays = [
+      'Воскресенье','Понедельник','Вторник','Среда',
+      'Четверг','Пятница','Суббота'
+    ];
+    var monthsGen = [
+      'января','февраля','марта','апреля','мая','июня',
+      'июля','августа','сентября','октября','ноября','декабря'
+    ];
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function updateClock() {
+      var now   = new Date();
+      var wday  = weekdays[now.getDay()];
+      var date  = now.getDate();
+      var mon   = monthsGen[now.getMonth()];
+      var year  = now.getFullYear();
+      var time  = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+      document.getElementById('clock').textContent =
+        wday + ', ' + date + ' ' + mon + ' ' + year + ' г.,  ' + time;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+
+</body>
+</html>
