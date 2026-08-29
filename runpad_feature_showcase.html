@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runpad Feature Showcase</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #121a28;
+      color: #eef4ff;
+    }
+    body {
+      background: linear-gradient(145deg, #111827, #1d2b44);
+    }
+    #header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 70px;
+      padding: 12px 22px;
+      z-index: 20;
+      background: rgba(10,16,27,.94);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    #header h1 { margin: 0; font-size: 22px; font-weight: 500; }
+    #header p { margin: 4px 0 0; color: #9baecc; font-size: 11px; }
+    #counter {
+      position: absolute;
+      right: 24px;
+      top: 18px;
+      color: #b7c7e0;
+      font-size: 12px;
+    }
+    #counter strong { color: #6fddb0; font-size: 20px; }
+    #content {
+      position: absolute;
+      top: 70px; left: 0; right: 0; bottom: 0;
+      padding: 18px 22px 30px;
+      overflow-y: auto;
+    }
+    .section {
+      max-width: 1220px;
+      margin: 0 auto 20px;
+    }
+    .section h2 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 500;
+    }
+    .section-intro {
+      margin: 0 0 12px;
+      color: #9fb1cf;
+      font-size: 11px;
+    }
+    .card {
+      display: inline-block;
+      vertical-align: top;
+      width: 48%;
+      min-height: 178px;
+      margin: 0 1.3% 13px 0;
+      padding: 13px;
+      border-radius: 11px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(31,43,66,.92);
+      box-shadow: 0 7px 22px rgba(0,0,0,.18);
+    }
+    .card.wide { width: 97.4%; }
+    .title { font-size: 14px; font-weight: 600; }
+    .status {
+      float: right;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: #46516a;
+      color: #e5edfa;
+      font-size: 10px;
+    }
+    .pass { background: #1e6b4e; color: #d9ffef; }
+    .fail { background: #793a43; color: #ffe1e4; }
+    .wait { background: #775e29; color: #fff0bd; }
+    .info { background: #315a83; color: #e0f1ff; }
+    .description {
+      clear: both;
+      min-height: 29px;
+      padding-top: 7px;
+      color: #aebddb;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .demo {
+      min-height: 65px;
+      margin-top: 7px;
+      padding: 8px;
+      border: 1px dashed rgba(255,255,255,.17);
+      border-radius: 8px;
+      background: rgba(0,0,0,.19);
+      overflow: hidden;
+    }
+    .log {
+      margin-top: 6px;
+      min-height: 25px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: rgba(0,0,0,.22);
+      color: #bdd0ee;
+      font: 10px Consolas, monospace;
+      white-space: pre-wrap;
+    }
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 11px;
+      margin: 3px 5px 3px 0;
+      background: #3b75b7;
+      color: #fff;
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    button:hover { background: #4c8bd1; }
+    button.secondary { background: #4a566c; }
+    .box {
+      width: 40px;
+      height: 40px;
+      border-radius: 7px;
+      background: linear-gradient(135deg,#5da6e2,#6bd6aa);
+      color: #102033;
+      line-height: 40px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,.28);
+    }
+    #flex-demo {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+    #msgrid-demo {
+      display: -ms-grid;
+      -ms-grid-columns: 1fr 1fr 1fr;
+    }
+    #msgrid-demo .box:nth-child(1) { -ms-grid-column: 1; }
+    #msgrid-demo .box:nth-child(2) { -ms-grid-column: 2; }
+    #msgrid-demo .box:nth-child(3) { -ms-grid-column: 3; }
+    #calc-parent { width: 300px; max-width: 100%; background: #3a465e; }
+    #calc-child { width: calc(100% - 50px); height: 30px; background: #68d0a8; }
+    #effect-box {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      margin: 8px 15px;
+      border-radius: 9px;
+      background: #e57868;
+      box-shadow: 7px 7px 14px rgba(0,0,0,.4);
+      -ms-transform: rotate(20deg);
+      -webkit-transform: rotate(20deg);
+      transform: rotate(20deg);
+      -webkit-animation: motion 1.8s infinite alternate ease-in-out;
+      animation: motion 1.8s infinite alternate ease-in-out;
+    }
+    @-webkit-keyframes motion {
+      from { left: 0; -webkit-transform: rotate(20deg) scale(.8); }
+      to { left: 190px; -webkit-transform: rotate(380deg) scale(1.15); }
+    }
+    @keyframes motion {
+      from { left: 0; transform: rotate(20deg) scale(.8); }
+      to { left: 190px; transform: rotate(380deg) scale(1.15); }
+    }
+    #transition-box {
+      width: 55px; height: 30px;
+      background: #5fa8e4;
+      -webkit-transition: width .6s, background .6s;
+      transition: width .6s, background .6s;
+    }
+    #transition-box.big { width: 210px; background: #efbd5d; }
+    #dom-box {
+      width: 90px; height: 38px;
+      border-radius: 7px;
+      background: #48566e;
+      line-height: 38px;
+      text-align: center;
+      -webkit-transition: all .35s;
+      transition: all .35s;
+    }
+    #dom-box.changed { width: 190px; background: #68cea5; color: #10271f; }
+    #canvas {
+      width: 100%;
+      max-width: 700px;
+      height: 250px;
+      border-radius: 9px;
+      background: #08111e;
+    }
+    #svg {
+      width: 100%;
+      max-width: 700px;
+      height: 190px;
+      border-radius: 9px;
+      background: #0b1422;
+    }
+    #drop {
+      height: 85px;
+      border: 2px dashed #5c83b6;
+      border-radius: 9px;
+      line-height: 85px;
+      text-align: center;
+      color: #a9bcda;
+    }
+    #drop.over { border-color: #6fddb0; background: rgba(80,180,135,.14); }
+    #pointer {
+      height: 115px;
+      border: 1px dashed #668cbe;
+      border-radius: 9px;
+      line-height: 115px;
+      text-align: center;
+      color: #a6bbda;
+      -ms-touch-action: none;
+      touch-action: none;
+    }
+    input[type=text] {
+      padding: 7px;
+      border: 1px solid #52637c;
+      border-radius: 7px;
+      background: #121b2b;
+      color: #fff;
+    }
+    audio, video { max-width: 100%; margin-top: 5px; }
+    @media screen and (max-width: 760px) {
+      .card { width: 100%; margin-right: 0; }
+      #counter { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>Runpad Feature Showcase</h1>
+    <p>Реальные действия и измерения вместо простого обнаружения API</p>
+    <div id="counter"><strong id="passed">0</strong> функций подтверждено</div>
+  </div>
+
+  <div id="content">
+    <div class="section">
+      <h2>CSS и компоновка</h2>
+      <p class="section-intro">Страница измеряет фактические координаты и размеры элементов.</p>
+
+      <div class="card">
+        <span class="title">Современный Flexbox</span><span id="s-flex" class="status wait">проверка</span>
+        <div class="description">Три блока должны распределиться по одной строке.</div>
+        <div id="flex-demo" class="demo"><span class="box">1</span><span class="box">2</span><span class="box">3</span></div>
+        <div id="l-flex" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">Старый -ms-grid</span><span id="s-grid" class="status wait">проверка</span>
+        <div class="description">Три блока размещаются в отдельных колонках IE Grid.</div>
+        <div id="msgrid-demo" class="demo"><span class="box">1</span><span class="box">2</span><span class="box">3</span></div>
+        <div id="l-grid" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">calc(), vw и vh</span><span id="s-units" class="status wait">проверка</span>
+        <div class="description">Проверяются рассчитанная ширина и единицы окна.</div>
+        <div class="demo">
+          <div id="calc-parent"><div id="calc-child"></div></div>
+          <div id="vw-box" style="width:10vw;height:3vh;min-height:20px;margin-top:7px;background:#a77ad4;"></div>
+        </div>
+        <div id="l-units" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">Transform, animation, тень</span><span id="s-effects" class="status wait">проверка</span>
+        <div class="description">Красный блок должен двигаться, вращаться, менять масштаб и иметь тень.</div>
+        <div class="demo"><div id="effect-box"></div></div>
+        <div id="l-effects" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">CSS transition</span><span id="s-transition" class="status wait">ожидает</span>
+        <div class="description">Нажмите кнопку — полоска должна плавно расшириться.</div>
+        <div class="demo"><div id="transition-box"></div><button onclick="testTransition()">Запустить</button></div>
+        <div id="l-transition" class="log">Нажмите кнопку.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">CSS filter</span><span id="s-filter" class="status info">ручная оценка</span>
+        <div class="description">Правый образец должен быть заметно размытым и насыщенным.</div>
+        <div class="demo">
+          <span style="display:inline-block;width:70px;height:45px;margin-right:14px;background:linear-gradient(135deg,#ff684f,#ffd25f);"></span>
+          <span style="display:inline-block;width:70px;height:45px;background:linear-gradient(135deg,#ff684f,#ffd25f);-webkit-filter:blur(2px) saturate(1.8);filter:blur(2px) saturate(1.8);"></span>
+          <button onclick="confirmFilter()">Вижу разницу</button>
+        </div>
+        <div id="l-filter" class="log">Подтвердите визуально.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>JavaScript и DOM</h2>
+      <p class="section-intro">Каждый API выполняет конкретную операцию и проверяет результат.</p>
+
+      <div class="card">
+        <span class="title">querySelector, classList, dataset</span><span id="s-dom" class="status wait">ожидает</span>
+        <div class="description">Кнопка найдёт элемент, изменит класс и data-state.</div>
+        <div class="demo">
+          <div id="dom-box" data-state="initial">initial</div>
+          <button onclick="testDom()">Изменить DOM</button>
+        </div>
+        <div id="l-dom" class="log">Нажмите кнопку.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">addEventListener</span><span id="s-event" class="status wait">ожидает</span>
+        <div class="description">Обработчик кнопки назначен только через addEventListener.</div>
+        <div class="demo"><button id="event-button">Нажать</button><span id="event-count">0 нажатий</span></div>
+        <div id="l-event" class="log">Нажмите кнопку.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">MutationObserver</span><span id="s-mutation" class="status wait">ожидает</span>
+        <div class="description">Наблюдатель должен поймать изменение текста.</div>
+        <div class="demo"><span id="mutation-text">Исходный текст</span><br /><button onclick="changeObservedText()">Изменить</button></div>
+        <div id="l-mutation" class="log">Наблюдатель запускается при загрузке.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">JSON + let/const</span><span id="s-js" class="status wait">проверка</span>
+        <div class="description">JSON проходит полный цикл, а let/const реально выполняются.</div>
+        <div id="l-js" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">requestAnimationFrame</span><span id="s-raf" class="status wait">проверка</span>
+        <div class="description">Счётчик должен получить минимум 20 кадров.</div>
+        <div class="demo"><span id="raf-count">0 кадров</span></div>
+        <div id="l-raf" class="log"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Canvas 2D и SVG</h2>
+      <p class="section-intro">Обе сцены генерируются кодом без библиотек и внешних изображений.</p>
+
+      <div class="card wide">
+        <span class="title">Анимированный Canvas 2D</span><span id="s-canvas" class="status wait">запуск</span>
+        <div class="description">Движущиеся частицы, линии, градиент и текст перерисовываются через requestAnimationFrame.</div>
+        <div class="demo"><canvas id="canvas" width="700" height="250"></canvas></div>
+        <div id="l-canvas" class="log">Инициализация...</div>
+      </div>
+
+      <div class="card wide">
+        <span class="title">Inline SVG и изменение атрибутов</span><span id="s-svg" class="status wait">ожидает</span>
+        <div class="description">Кнопка перемещает круг и меняет цвета SVG-фигур.</div>
+        <div class="demo">
+          <svg id="svg" viewBox="0 0 700 190">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4b93da"></stop><stop offset="100%" stop-color="#70d0a7"></stop></linearGradient></defs>
+            <rect x="15" y="15" width="670" height="160" rx="18" fill="url(#g)" opacity=".27"></rect>
+            <circle id="svg-circle" cx="100" cy="95" r="42" fill="#efbc5a"></circle>
+            <rect id="svg-rect" x="270" y="52" width="100" height="86" rx="14" fill="#da6f7a"></rect>
+            <path d="M460 140 Q520 20 610 140" fill="none" stroke="#6ed4ac" stroke-width="12" stroke-linecap="round"></path>
+            <text id="svg-text" x="430" y="172" fill="#dbe8ff" font-size="18">SVG готов</text>
+          </svg>
+          <button onclick="testSvg()">Изменить SVG</button>
+        </div>
+        <div id="l-svg" class="log">Нажмите кнопку.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Файлы, Blob и сеть</h2>
+      <p class="section-intro">Файлы обрабатываются локально. XHR читает README.md из папки проекта.</p>
+
+      <div class="card">
+        <span class="title">FileReader</span><span id="s-file" class="status wait">ожидает файл</span>
+        <div class="description">Выберите небольшой TXT, CSV или JSON.</div>
+        <div class="demo"><input type="file" onchange="readInputFile(this)" /></div>
+        <div id="l-file" class="log">Файл не выбран.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">Drag and Drop</span><span id="s-drop" class="status wait">ожидает файл</span>
+        <div class="description">Перетащите любой небольшой файл в область.</div>
+        <div class="demo"><div id="drop">Перетащите файл сюда</div></div>
+        <div id="l-drop" class="log">Ожидается перетаскивание.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">Blob, Object URL и msSaveBlob</span><span id="s-blob" class="status wait">ожидает</span>
+        <div class="description">Создаёт TXT в памяти и вызывает системное сохранение IE.</div>
+        <div class="demo"><button onclick="testBlob()">Создать TXT</button></div>
+        <div id="l-blob" class="log">Нажмите кнопку.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">XMLHttpRequest</span><span id="s-xhr" class="status wait">ожидает</span>
+        <div class="description">Выполняет настоящий запрос к локальному README.md.</div>
+        <div class="demo"><button onclick="testXhr()">Загрузить README.md</button></div>
+        <div id="l-xhr" class="log">Нажмите кнопку.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">WebSocket API</span><span id="s-websocket" class="status wait">проверка</span>
+        <div class="description">Подтверждается создание класса; соединение требует отдельного сервера.</div>
+        <div id="l-websocket" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">Локальное Audio / Video</span><span id="s-media" class="status wait">ожидает файл</span>
+        <div class="description">Выберите медиафайл и попробуйте воспроизвести.</div>
+        <div class="demo">
+          <input type="file" accept="audio/*,video/*" onchange="loadMedia(this)" /><br />
+          <audio id="audio" controls style="display:none;width:100%;"></audio>
+          <video id="video" controls width="300" height="150" style="display:none;background:#000;"></video>
+        </div>
+        <div id="l-media" class="log">Файл не выбран.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Runpad и системные действия</h2>
+      <p class="section-intro">external.doShellExec проверяется прямым вызовом, а не косвенным обнаружением.</p>
+
+      <div class="card wide">
+        <span class="title">Pointer Events</span><span id="s-pointer" class="status wait">ожидает</span>
+        <div class="description">Двигайте мышью или стилусом внутри области.</div>
+        <div class="demo"><div id="pointer">Двигайте указателем здесь</div></div>
+        <div id="l-pointer" class="log">Событие ещё не получено.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">Fullscreen API</span><span id="s-fullscreen" class="status wait">ожидает</span>
+        <div class="description">Переводит страницу в полноэкранный режим.</div>
+        <div class="demo"><button onclick="testFullscreen()">Полный экран</button></div>
+        <div id="l-fullscreen" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">Буфер обмена</span><span id="s-clipboard" class="status wait">ожидает</span>
+        <div class="description">Скопируйте строку и вставьте её во второе поле.</div>
+        <div class="demo">
+          <input id="copy-source" type="text" value="RUNPAD_CLIPBOARD_OK" />
+          <button onclick="copyText()">Копировать</button>
+          <input id="paste-target" type="text" placeholder="Ctrl+V сюда" onkeyup="verifyPaste()" />
+        </div>
+        <div id="l-clipboard" class="log">Ожидается копирование.</div>
+      </div>
+
+      <div class="card">
+        <span class="title">external.doShellExec</span><span id="s-shell" class="status wait">ожидает</span>
+        <div class="description">Прямой запуск Блокнота и HTTPS-ссылки через Runpad.</div>
+        <div class="demo">
+          <button onclick="openNotepad()">Открыть Блокнот</button>
+          <button class="secondary" onclick="openSite()">Открыть example.com</button>
+        </div>
+        <div id="l-shell" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">window.open</span><span id="s-window" class="status wait">ожидает</span>
+        <div class="description">Создаёт пустое новое окно без внешней сети.</div>
+        <div class="demo"><button onclick="testWindow()">Создать окно</button></div>
+        <div id="l-window" class="log"></div>
+      </div>
+
+      <div class="card">
+        <span class="title">Паспорт текущего запуска</span><span class="status info">информация</span>
+        <div id="environment" class="log"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var passed = {};
+    var eventCount = 0;
+    var rafCount = 0;
+    var canvasFrame = 0;
+    var particles = [];
+    var ctx = null;
+    var canvas = null;
+
+    function text(id, value) {
+      var element = document.getElementById(id);
+      if (!element) { return; }
+      if (typeof element.textContent !== 'undefined') {
+        element.textContent = value;
+      } else {
+        element.innerText = value;
+      }
+    }
+
+    function status(id, state, value) {
+      var element = document.getElementById('s-' + id);
+      if (!element) { return; }
+      element.className = 'status ' + state;
+      text('s-' + id, value);
+
+      if (state === 'pass') {
+        passed[id] = true;
+      } else if (passed[id]) {
+        delete passed[id];
+      }
+
+      var count = 0;
+      var key;
+      for (key in passed) {
+        if (passed.hasOwnProperty(key) && passed[key]) { count++; }
+      }
+      text('passed', count);
+    }
+
+    function log(id, value) {
+      text('l-' + id, value);
+    }
+
+    function measureCss() {
+      var flexItems = document.getElementById('flex-demo').getElementsByTagName('span');
+      var a = flexItems[0].getBoundingClientRect();
+      var b = flexItems[1].getBoundingClientRect();
+      var c = flexItems[2].getBoundingClientRect();
+      var flexOk = Math.abs(a.top - b.top) < 3 && b.left > a.right && c.left > b.right;
+      status('flex', flexOk ? 'pass' : 'fail', flexOk ? 'работает' : 'не работает');
+      log('flex', 'x: ' + Math.round(a.left) + ', ' + Math.round(b.left) + ', ' + Math.round(c.left));
+
+      var gridItems = document.getElementById('msgrid-demo').getElementsByTagName('span');
+      a = gridItems[0].getBoundingClientRect();
+      b = gridItems[1].getBoundingClientRect();
+      c = gridItems[2].getBoundingClientRect();
+      var gridOk = b.left > a.right && c.left > b.right;
+      status('grid', gridOk ? 'pass' : 'fail', gridOk ? 'работает' : 'не работает');
+      log('grid', 'x: ' + Math.round(a.left) + ', ' + Math.round(b.left) + ', ' + Math.round(c.left));
+
+      var parentWidth = document.getElementById('calc-parent').offsetWidth;
+      var childWidth = document.getElementById('calc-child').offsetWidth;
+      var viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+      var vwWidth = document.getElementById('vw-box').offsetWidth;
+      var unitsOk =
+        Math.abs(parentWidth - childWidth - 50) <= 2 &&
+        Math.abs(vwWidth - viewportWidth * .1) < 4;
+      status('units', unitsOk ? 'pass' : 'fail', unitsOk ? 'работает' : 'ошибка');
+      log('units', 'calc: ' + parentWidth + '-' + childWidth + '= ' + (parentWidth-childWidth) + ' px; 10vw=' + vwWidth);
+
+      var effect = document.getElementById('effect-box');
+      var first = effect.getBoundingClientRect().left;
+      setTimeout(function() {
+        var second = effect.getBoundingClientRect().left;
+        var ok = Math.abs(second - first) > 5;
+        status('effects', ok ? 'pass' : 'fail', ok ? 'работает' : 'не работает');
+        log('effects', 'x изменился: ' + Math.round(first) + ' → ' + Math.round(second));
+      }, 650);
+    }
+
+    function testTransition() {
+      var box = document.getElementById('transition-box');
+      var before = box.offsetWidth;
+      box.className = box.className === 'big' ? '' : 'big';
+      setTimeout(function() {
+        var after = box.offsetWidth;
+        var ok = Math.abs(after-before) > 80;
+        status('transition', ok ? 'pass' : 'fail', ok ? 'работает' : 'ошибка');
+        log('transition', before + ' → ' + after + ' px');
+      }, 720);
+    }
+
+    function confirmFilter() {
+      status('filter', 'pass', 'подтверждено');
+      log('filter', 'Визуальная разница подтверждена.');
+    }
+
+    function testDom() {
+      try {
+        var box = document.querySelector('#dom-box');
+        box.classList.toggle('changed');
+        box.dataset.state = box.className.indexOf('changed') >= 0 ? 'changed' : 'initial';
+        text('dom-box', box.dataset.state);
+        status('dom', 'pass', 'работает');
+        log('dom', 'class=' + box.className + '; data-state=' + box.dataset.state);
+      } catch (error) {
+        status('dom', 'fail', 'ошибка');
+        log('dom', error.message);
+      }
+    }
+
+    function setupEvents() {
+      var button = document.getElementById('event-button');
+      if (!button.addEventListener) {
+        status('event', 'fail', 'нет API');
+      } else {
+        button.addEventListener('click', function() {
+          eventCount++;
+          text('event-count', eventCount + ' нажатий');
+          status('event', 'pass', 'работает');
+          log('event', 'addEventListener вызван ' + eventCount + ' раз.');
+        }, false);
+      }
+
+      if (window.MutationObserver) {
+        var observer = new MutationObserver(function(records) {
+          status('mutation', 'pass', 'работает');
+          log('mutation', 'Получено изменений: ' + records.length);
+        });
+        observer.observe(document.getElementById('mutation-text'), {
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      } else {
+        status('mutation', 'fail', 'нет API');
+      }
+    }
+
+    function changeObservedText() {
+      text('mutation-text', 'Изменено: ' + new Date().toLocaleTimeString());
+    }
+
+    function testJs() {
+      try {
+        var source = {name:'Runpad', values:[1,2,3]};
+        var encoded = JSON.stringify(source);
+        var decoded = JSON.parse(encoded);
+        var modernResult = new Function('let a=7; const b=5; return a+b;')();
+        var ok = decoded.name === 'Runpad' && decoded.values.length === 3 && modernResult === 12;
+        status('js', ok ? 'pass' : 'fail', ok ? 'работает' : 'ошибка');
+        log('js', encoded + '; let/const result=' + modernResult);
+      } catch (error) {
+        status('js', 'fail', 'ошибка');
+        log('js', error.message);
+      }
+    }
+
+    function testRaf() {
+      var frame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      if (!frame) {
+        status('raf', 'fail', 'нет API');
+        return;
+      }
+      function tick() {
+        rafCount++;
+        text('raf-count', rafCount + ' кадров');
+        if (rafCount >= 20) {
+          status('raf', 'pass', 'работает');
+          log('raf', 'Получено 20 кадров.');
+        } else {
+          frame(tick);
+        }
+      }
+      frame(tick);
+    }
+
+    function initCanvas() {
+      canvas = document.getElementById('canvas');
+      if (!canvas || !canvas.getContext) {
+        status('canvas', 'fail', 'нет Canvas');
+        return;
+      }
+      ctx = canvas.getContext('2d');
+      for (var i=0; i<18; i++) {
+        particles.push({
+          x:Math.random()*canvas.width,
+          y:Math.random()*canvas.height,
+          vx:.5+Math.random()*1.8,
+          vy:-.7+Math.random()*1.4,
+          r:3+Math.random()*7,
+          color:i%3===0?'#69d2a8':(i%3===1?'#5ca5e1':'#efbd61')
+        });
+      }
+      drawCanvas();
+    }
+
+    function drawCanvas() {
+      if (!ctx) { return; }
+      var gradient = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      gradient.addColorStop(0,'#08111e');
+      gradient.addColorStop(1,'#17304e');
+      ctx.fillStyle=gradient;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle='rgba(110,190,220,.16)';
+
+      for (var i=0; i<particles.length; i++) {
+        var p=particles[i];
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x>canvas.width+10){p.x=-10;}
+        if(p.y<-10){p.y=canvas.height+10;}
+        if(p.y>canvas.height+10){p.y=-10;}
+        ctx.beginPath(); ctx.fillStyle=p.color;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2,false); ctx.fill();
+        if(i>0){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(particles[i-1].x,particles[i-1].y);ctx.stroke();}
+      }
+      ctx.fillStyle='rgba(255,255,255,.86)';
+      ctx.font='18px Segoe UI';
+      ctx.fillText('Canvas 2D · кадр '+canvasFrame,18,27);
+      canvasFrame++;
+      if(canvasFrame===15){
+        status('canvas','pass','работает');
+        log('canvas','Отрисовано 15 кадров, анимация продолжается.');
+      }
+      var frame=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.msRequestAnimationFrame;
+      if(frame){frame(drawCanvas);}else{setTimeout(drawCanvas,33);}
+    }
+
+    function testSvg() {
+      try {
+        var circle=document.getElementById('svg-circle');
+        var rect=document.getElementById('svg-rect');
+        var x=parseInt(circle.getAttribute('cx'),10);
+        var next=x<200?210:100;
+        circle.setAttribute('cx',next);
+        circle.setAttribute('fill',next===210?'#6ed0a7':'#efbc5a');
+        rect.setAttribute('fill',next===210?'#5b9fe0':'#da6f7a');
+        text('svg-text','SVG изменён: cx='+next);
+        status('svg','pass','работает');
+        log('svg','Атрибут cx изменён на '+next+'.');
+      }catch(error){
+        status('svg','fail','ошибка'); log('svg',error.message);
+      }
+    }
+
+    function readFile(file,id) {
+      if(!file||!window.FileReader){status(id,'fail','нет FileReader');return;}
+      var reader=new FileReader();
+      reader.onload=function(){
+        var value=String(reader.result||'');
+        status(id,'pass','работает');
+        log(id,'Файл '+file.name+', '+file.size+' байт. Начало: '+value.substring(0,150));
+      };
+      reader.onerror=function(){status(id,'fail','ошибка');};
+      reader.readAsText(file);
+    }
+
+    function readInputFile(input) {
+      if(input.files&&input.files.length){readFile(input.files[0],'file');}
+    }
+
+    function setupDrop() {
+      var zone=document.getElementById('drop');
+      if(!zone.addEventListener){status('drop','fail','нет API');return;}
+      zone.addEventListener('dragover',function(event){event.preventDefault();zone.className='over';},false);
+      zone.addEventListener('dragleave',function(){zone.className='';},false);
+      zone.addEventListener('drop',function(event){
+        event.preventDefault();zone.className='';
+        if(event.dataTransfer&&event.dataTransfer.files.length){readFile(event.dataTransfer.files[0],'drop');}
+      },false);
+    }
+
+    function testBlob() {
+      try {
+        var blob=new Blob([
+          'RUNPAD BLOB TEST\r\nСоздано: '+new Date().toLocaleString()
+        ],{type:'text/plain;charset=utf-8'});
+        if(navigator.msSaveBlob){
+          navigator.msSaveBlob(blob,'runpad-blob-test.txt');
+          status('blob','pass','msSaveBlob работает');
+          log('blob','Передана команда сохранить TXT.');
+        }else if(window.URL&&window.URL.createObjectURL){
+          var url=window.URL.createObjectURL(blob);
+          window.open(url,'_blank');
+          status('blob','pass','Object URL работает');
+          log('blob','Создан адрес: '+url);
+        }else{throw new Error('Нет API сохранения');}
+      }catch(error){status('blob','fail','ошибка');log('blob',error.message);}
+    }
+
+    function testXhr() {
+      try {
+        var xhr=new XMLHttpRequest();
+        xhr.onreadystatechange=function(){
+          if(xhr.readyState===4){
+            var ok=(xhr.status>=200&&xhr.status<300)||(xhr.status===0&&xhr.responseText);
+            status('xhr',ok?'pass':'fail',ok?'работает':'заблокировано');
+            log('xhr','status='+xhr.status+', ответ='+((xhr.responseText||'').substring(0,120)));
+          }
+        };
+        xhr.open('GET','./README.md?t='+new Date().getTime(),true);
+        xhr.send(null);
+        log('xhr','Запрос отправлен...');
+      }catch(error){status('xhr','fail','ошибка');log('xhr',error.message);}
+    }
+
+    function testWebSocket() {
+      var ok=typeof window.WebSocket==='function';
+      status('websocket',ok?'pass':'fail',ok?'класс доступен':'нет API');
+      log('websocket',ok?'Конструктор найден; для соединения нужен сервер.':'WebSocket отсутствует.');
+    }
+
+    function loadMedia(input) {
+      if(!input.files||!input.files.length){return;}
+      var file=input.files[0];
+      if(!window.URL||!window.URL.createObjectURL){status('media','fail','нет URL API');return;}
+      var url=window.URL.createObjectURL(file);
+      var audio=document.getElementById('audio');
+      var video=document.getElementById('video');
+      if(file.type.indexOf('audio/')===0){
+        video.style.display='none';audio.style.display='block';audio.src=url;
+        audio.oncanplay=function(){status('media','pass','Audio готово');log('media','Аудио распознано.');};
+      }else if(file.type.indexOf('video/')===0){
+        audio.style.display='none';video.style.display='block';video.src=url;
+        video.oncanplay=function(){status('media','pass','Video готово');log('media','Видео распознано.');};
+      }else{status('media','fail','формат не распознан');}
+    }
+
+    function setupPointer() {
+      var pad=document.getElementById('pointer');
+      if('onpointermove' in pad){
+        pad.onpointermove=function(event){
+          event=event||window.event;
+          var value='type='+event.pointerType+', buttons='+event.buttons+', pressure='+event.pressure+', x='+Math.round(event.clientX)+', y='+Math.round(event.clientY);
+          text('pointer',value);status('pointer','pass','работает');log('pointer',value);
+        };
+      }else{
+        pad.onmousemove=function(event){
+          event=event||window.event;
+          var value='mouse x='+Math.round(event.clientX)+', y='+Math.round(event.clientY);
+          text('pointer',value);status('pointer','info','только mouse');log('pointer',value);
+        };
+      }
+    }
+
+    function testFullscreen() {
+      var element=document.documentElement;
+      var method=element.requestFullscreen||element.msRequestFullscreen||element.webkitRequestFullscreen;
+      if(!method){status('fullscreen','fail','нет API');return;}
+      try{method.call(element);status('fullscreen','pass','запрос принят');log('fullscreen','Команда выполнена.');}
+      catch(error){status('fullscreen','fail','ошибка');log('fullscreen',error.message);}
+    }
+
+    function copyText() {
+      var source=document.getElementById('copy-source');
+      source.focus();source.select();
+      var ok=false;
+      try{ok=document.execCommand('copy');}catch(error){ok=false;}
+      status('clipboard',ok?'info':'fail',ok?'скопировано':'ошибка');
+      log('clipboard',ok?'Теперь вставьте Ctrl+V во второе поле.':'copy вернул false.');
+    }
+
+    function verifyPaste() {
+      var ok=document.getElementById('paste-target').value===document.getElementById('copy-source').value;
+      if(ok){status('clipboard','pass','работает');log('clipboard','Копирование и вставка подтверждены.');}
+    }
+
+    function openNotepad() {
+      try{window.external.doShellExec('notepad.exe');status('shell','pass','команда передана');log('shell','doShellExec выполнен без исключения.');}
+      catch(error){status('shell','fail','недоступен');log('shell',error.message||String(error));}
+    }
+
+    function openSite() {
+      try{window.external.doShellExec('https://example.com');status('shell','pass','команда передана');log('shell','HTTPS-ссылка передана Runpad.');}
+      catch(error){status('shell','fail','недоступен');log('shell',error.message||String(error));}
+    }
+
+    function testWindow() {
+      try{
+        var child=window.open('about:blank','_blank');
+        if(child){child.document.write('<p style="font-family:Segoe UI">window.open работает</p>');status('window','pass','работает');log('window','Новое окно создано.');}
+        else{status('window','fail','заблокировано');log('window','window.open вернул null.');}
+      }catch(error){status('window','fail','ошибка');log('window',error.message);}
+    }
+
+    function environment() {
+      text('environment',
+        'User Agent: '+navigator.userAgent+'\r\n'+
+        'documentMode: '+(document.documentMode||'нет')+'\r\n'+
+        'protocol: '+window.location.protocol+'\r\n'+
+        'viewport: '+(document.documentElement.clientWidth||window.innerWidth)+'x'+(document.documentElement.clientHeight||window.innerHeight)+'\r\n'+
+        'PointerEvent: '+(!!window.PointerEvent)+'\r\n'+
+        'msSaveBlob: '+(typeof navigator.msSaveBlob)
+      );
+    }
+
+    function init() {
+      setupEvents();
+      setupDrop();
+      setupPointer();
+      testJs();
+      testRaf();
+      initCanvas();
+      testWebSocket();
+      environment();
+      setTimeout(measureCss,250);
+    }
+
+    window.onload=init;
+  </script>
+</body>
+</html>
